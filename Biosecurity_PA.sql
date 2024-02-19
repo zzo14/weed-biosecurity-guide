@@ -1,7 +1,3 @@
-DROP SCHEMA IF EXISTS biosercurity;
-CREATE SCHEMA biosercurity;
-USE biosercurity;
-
 /* ----- Create the tables: ----- */
 CREATE TABLE IF NOT EXISTS userAuth (
     id INT PRIMARY KEY AUTO_INCREMENT,
