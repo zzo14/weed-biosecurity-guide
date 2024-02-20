@@ -3,12 +3,12 @@ CREATE TABLE IF NOT EXISTS userAuth (
     id INT PRIMARY KEY AUTO_INCREMENT,
     username VARCHAR(50) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
-    password_salt VARCHAR(255) NOT NULL,
     userType ENUM('Admin', 'Staff', 'Gardener') NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS gardener (
     gardener_id INT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL,
     first_name VARCHAR(50) NOT NULL,
     last_name VARCHAR(50) NOT NULL,
     address VARCHAR(100) NOT NULL,
@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS gardener (
 
 CREATE TABLE IF NOT EXISTS staff (
     staff_id INT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL,
     first_name VARCHAR(50) NOT NULL,
     last_name VARCHAR(50) NOT NULL,
     email VARCHAR(50) NOT NULL,
@@ -34,6 +35,7 @@ CREATE TABLE IF NOT EXISTS staff (
 
 CREATE TABLE IF NOT EXISTS administration (
     admin_id INT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL,
     first_name VARCHAR(50) NOT NULL,
     last_name VARCHAR(50) NOT NULL,
     email VARCHAR(50) NOT NULL,
@@ -64,31 +66,31 @@ CREATE TABLE IF NOT EXISTS weedImage (
 );
 
 /* ----- Insert data into the tables: ----- */
-INSERT INTO userAuth (username, password_hash, password_salt, userType) VALUES
-    ('gardener1', 'hash1', 'salt1', 'Gardener'),
-    ('gardener2', 'hash2', 'salt2', 'Gardener'),
-    ('gardener3', 'hash3', 'salt3', 'Gardener'),
-    ('gardener4', 'hash4', 'salt4', 'Gardener'),
-    ('gardener5', 'hash5', 'salt5', 'Gardener'),
-    ('staff1', 'hash6', 'salt6', 'Staff'),
-    ('staff2', 'hash7', 'salt7', 'Staff'),
-    ('staff3', 'hash8', 'salt8', 'Staff'),
-    ('admin', 'hash9', 'salt9', 'Admin');
+INSERT INTO userAuth (username, password_hash, userType) VALUES
+    ('gardener1', 'scrypt:32768:8:1$3RY2MpKJfMBL6y2M$face964ccc797ac918e011d307e0d1b33c4d63ebce4a241d912edc0d498c47861f36ec03a6a39394376a930a982434b2edfa03283f4ea20f0b292c6514fce8e0', 'Gardener'),
+    ('gardener2', 'scrypt:32768:8:1$3RY2MpKJfMBL6y2M$face964ccc797ac918e011d307e0d1b33c4d63ebce4a241d912edc0d498c47861f36ec03a6a39394376a930a982434b2edfa03283f4ea20f0b292c6514fce8e0', 'Gardener'),
+    ('gardener3', 'scrypt:32768:8:1$3RY2MpKJfMBL6y2M$face964ccc797ac918e011d307e0d1b33c4d63ebce4a241d912edc0d498c47861f36ec03a6a39394376a930a982434b2edfa03283f4ea20f0b292c6514fce8e0', 'Gardener'),
+    ('gardener4', 'scrypt:32768:8:1$3RY2MpKJfMBL6y2M$face964ccc797ac918e011d307e0d1b33c4d63ebce4a241d912edc0d498c47861f36ec03a6a39394376a930a982434b2edfa03283f4ea20f0b292c6514fce8e0', 'Gardener'),
+    ('gardener5', 'scrypt:32768:8:1$3RY2MpKJfMBL6y2M$face964ccc797ac918e011d307e0d1b33c4d63ebce4a241d912edc0d498c47861f36ec03a6a39394376a930a982434b2edfa03283f4ea20f0b292c6514fce8e0', 'Gardener'),
+    ('staff1', 'scrypt:32768:8:1$3RY2MpKJfMBL6y2M$face964ccc797ac918e011d307e0d1b33c4d63ebce4a241d912edc0d498c47861f36ec03a6a39394376a930a982434b2edfa03283f4ea20f0b292c6514fce8e0', 'Staff'),
+    ('staff2', 'scrypt:32768:8:1$3RY2MpKJfMBL6y2M$face964ccc797ac918e011d307e0d1b33c4d63ebce4a241d912edc0d498c47861f36ec03a6a39394376a930a982434b2edfa03283f4ea20f0b292c6514fce8e0', 'Staff'),
+    ('staff3', 'scrypt:32768:8:1$3RY2MpKJfMBL6y2M$face964ccc797ac918e011d307e0d1b33c4d63ebce4a241d912edc0d498c47861f36ec03a6a39394376a930a982434b2edfa03283f4ea20f0b292c6514fce8e0', 'Staff'),
+    ('admin', 'scrypt:32768:8:1$3RY2MpKJfMBL6y2M$face964ccc797ac918e011d307e0d1b33c4d63ebce4a241d912edc0d498c47861f36ec03a6a39394376a930a982434b2edfa03283f4ea20f0b292c6514fce8e0', 'Admin');
 
-INSERT INTO gardener (gardener_id, first_name, last_name, address, email, phone_number, date_joined, status) VALUES
-    (1, 'John', 'Doe', '121 Main St', 'john.doe@example.com', '123-456-7890', '2024-01-01', 'Active'),
-    (2, 'Jane', 'Smith', '122 Main St', 'jane.smith@example.com', '123-456-7891', '2024-01-01', 'Active'),
-    (3, 'Joe', 'Jackson', '123 Main St', 'joe.jackson@example.com', '123-456-7892', '2024-01-01', 'Active'),
-    (4, 'Jim', 'Milly', '124 Main St', 'jim.milly@example.com', '123-456-7893', '2024-01-01', 'Active'),
-    (5, 'Jack', 'Johnson', '125 Main St', 'jack.johnson@example.com', '123-456-7894', '2024-01-01', 'Active');
+INSERT INTO gardener (gardener_id, username, first_name, last_name, address, email, phone_number, date_joined, status) VALUES
+    (1, 'gardener1', 'John', 'Doe', '121 Main St', 'john.doe@example.com', '123-456-7890', '2024-01-01', 'Active'),
+    (2, 'gardener2', 'Jane', 'Smith', '122 Main St', 'jane.smith@example.com', '123-456-7891', '2024-01-01', 'Active'),
+    (3, 'gardener3', 'Joe', 'Jackson', '123 Main St', 'joe.jackson@example.com', '123-456-7892', '2024-01-01', 'Active'),
+    (4, 'gardener4', 'Jim', 'Milly', '124 Main St', 'jim.milly@example.com', '123-456-7893', '2024-01-01', 'Active'),
+    (5, 'gardener5', 'Jack', 'Johnson', '125 Main St', 'jack.johnson@example.com', '123-456-7894', '2024-01-01', 'Active');
 
-INSERT INTO staff (staff_id, first_name, last_name, email, work_phone, hire_date, position, department, status) VALUES
-    (6, 'Alice', 'Brown', 'alice.brown@example.com', '123-456-7895', '2024-01-01', 'Researcher', 'Botany', 'Active'),
-    (7, 'Bob', 'Green', 'bob.green@example.com', '123-456-7896', '2024-01-01', 'Technician', 'Maintenance', 'Active'),
-    (8, 'Charlie', 'Blue', 'charlie.blue@example.com', '123-456-7897', '2024-01-01', 'Agent', 'Operations', 'Active');
+INSERT INTO staff (staff_id, username, first_name, last_name, email, work_phone, hire_date, position, department, status) VALUES
+    (6, 'staff1', 'Alice', 'Brown', 'alice.brown@example.com', '123-456-7895', '2024-01-01', 'Researcher', 'Botany', 'Active'),
+    (7, 'staff2', 'Bob', 'Green', 'bob.green@example.com', '123-456-7896', '2024-01-01', 'Technician', 'Maintenance', 'Active'),
+    (8, 'staff3', 'Charlie', 'Blue', 'charlie.blue@example.com', '123-456-7897', '2024-01-01', 'Agent', 'Operations', 'Active');
 
-INSERT INTO administration (admin_id, first_name, last_name, email, work_phone, hire_date, position, department, status) VALUES
-    (9, 'Diana', 'White', 'diana.white@example.com', '123-456-7898', '2024-01-01', 'Manager', 'Administration', 'Active');
+INSERT INTO administration (admin_id, username, first_name, last_name, email, work_phone, hire_date, position, department, status) VALUES
+    (9, 'admin', 'Diana', 'White', 'diana.white@example.com', '123-456-7898', '2024-01-01', 'Manager', 'Administration', 'Active');
 
 INSERT INTO weedGuide (common_name, scientific_name, weed_type, description, impacts, control_methods) VALUES
     ('Annual Poa', 'Poa annua', 'Grass', 'A samll grass often unnoticed in turf.','Can die off leaving bare ground, making turf look patchy.', 'Fungicide spraying, herbicides like Ethofumesate and Pendimethalin.'),
