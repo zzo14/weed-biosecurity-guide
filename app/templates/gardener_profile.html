@@ -3,21 +3,24 @@
 {% block title %}Gardener Home{% endblock %}
 
 {% block navbar %}
+{% include 'includes/navbar.html' %}
 {% include 'includes/sidebar.html' %}
 {% endblock %}
 
 {% block content %}
 <br/>
+<br/>
+<br/>
+<br/>
 <div class="profile-card ms-auto">
     <div class="row">
         <div class="col-lg-10 mx-auto">
-            <div class="card">
+            <div class="card mt-5">
                 <div class="card-header bg-success text-white">
-                    <h4 class="my-0">Garderer Profile</h4>
+                    <h4 class="my-0">Personal Information</h4>
                 </div>
                 <div class="card-body">
                     <form method="POST" action="{{ url_for('update_gardener_profile') }}">
-                        <h5 class="card-title">Personal Information</h5>
                         <div class="row justify-content-around">
                             <div class="mb-3 col-6">
                                 <label for="username" class="form-label">Username</label>
@@ -48,30 +51,6 @@
                         </div>
                         <div class="text-center">
                             <button type="submit" class="btn btn-success btn-block">Update Information</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <div class="card mt-4">
-                <div class="card-header bg-success text-white">
-                    <h4 class="my-0">Change Password</h4>
-                </div>
-                <div class="card-body">
-                    <form method="POST" action="{{ url_for('change_password') }}">
-                        <div class="mb-3">
-                            <label for="current_password" class="form-label">Current Password</label>
-                            <input type="password" class="form-control" id="current_password" name="current_password" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="new_password" class="form-label">New Password</label>
-                            <input type="password" class="form-control" id="new_password" name="new_password" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="confirm_password" class="form-label">Confirm Password</label>
-                            <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
-                        </div>
-                        <div class="text-center">
-                            <button type="submit" class="btn btn-success btn-block">Change Password</button>
                         </div>
                     </form>
                 </div>

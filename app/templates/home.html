@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Garden Weed Biosecurity Guide{% endblock %}
+
+{% block navbar %}
+<nav class="navtop">
+    <div>
+        <h1>GWBG</h1>
+        <a href="{{ url_for('login') }}"><i class="fa-solid fa-user"></i>Login</a>
+        <a href="{{ url_for('register') }}"><i class="fa-solid fa-user-plus"></i>Register Here</a>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5 bg-light rounded">
+    <!-- Heading section -->
+    <div class="text-center py-3">
+        <h1 class="display-3 text-success font-weight-bold">Garden Weed Biosecurity Guide</h1>
+        <p class="lead font-weight-bold">Where the thrill of Motorkhana comes alive!</p>
+    </div>
+
+    <!-- What is a Motorkhana with Images -->
+    <div class="row my-4">
+      <!-- Empty space for centering -->
+      <div class="col-lg-1"></div>
+        <!-- Images Column -->
+        <div class="col-lg-4">
+            <!-- Image 1 -->
+            <div class="mb-4">
+                <img src="/static/images/home_img.jpg" class="img-fluid" alt="Image showcasing weed" style="max-width: 100%; height: auto;">
+            </div>
+            <div class="mb-4">
+                <img src="/static/images/home_img2.jpg" class="img-fluid" alt="Image showcasing weed" style="max-width: 100%; height: auto;">
+            </div>
+        </div>
+        
+        <!-- What is a Motorkhana text content -->
+        <div class="col-lg-6">
+            <h3 class="display-6 font-weight-bold text-success">Environmental Weeds</h3>
+            <p class="lead">Weeds are plants growing in the 'wrong' place. For garden weeds, this may be a dandelion in the lawn or path. But in New Zealand, many weeds cause environmental damage. They may have started off being planted in gardens as ornamentals, and only became a problem when they 'escaped' into the wild where they are not wanted. A beautiful plant in one setting can cause harm in another.</p>
+            <p class="lead">Invasive weeds are ones that damage New Zealand's native ecosystems, threatening the survival of our native plants and animals; 75% of invasive weeds are garden plants that have 'escaped' and started growing where they are not wanted. Such weeds adversely affect 1/3 of New Zealand's threatened plant species.</p>
+            <p class="lead">Currently, New Zealand has around 300 significant invasive weed species, and this number is growing steadily; each year, about 15 cultivated plants escape' into natural areas, with around two of these becoming serious pests.</p>
+            <p class="lead">You can help in the fight against invasive weeds by learning what plants in your garden could ‘escape’ into the wild and cause harm, learning to identify invasive weeds, controlling weeds before they become established and replacing potential invasive weeds in your garden with suitable native alternatives.</p>
+        </div>
+        <div class="col-lg-1"></div>
+    </div>
+
+    <!-- Event Introduction with Image 3 -->
+    <div class="row my-5">
+      <!-- Empty space for centering -->
+      <div class="col-lg-1"></div>
+        <div class="col-lg-8">
+            <h2 class="display-8 text-center font-weight-bold text-success">Prevention</h2>
+            <p class="lead">The best way to stop weeds is to prevent them from establishing in the first place. Be careful about what you do with your garden waste. By dumping garden rubbish in the wrong place, you may encourage new weed infestations. Destroy garden waste by composting completely, disposal in council green waste or, where permitted, burning.</p>
+            <p class="lead">If you see any suspicious-looking plants in natural areas note the precise location of the plants and tell your local DOC or regional council.</p>
+        </div>
+        <!-- Empty space for centering -->
+      <div class="col-lg-1"></div>
+    </div>
+
+    <!-- Event Introduction with Image 3 -->
+    <div class="row my-5">
+        <!-- Empty space for centering -->
+        <div class="col-lg-1"></div>
+            <div class="col-lg-8">
+                <h2 class="display-8 text-center font-weight-bold text-success">Control</h2>
+                <p class="lead">Controlling invasive weeds will protect the environment and help prevent further spreading of weeds.</p>
+                <p class="lead">Before you start any weed control work there are some important things you need to think about:</p>
+                <ul>
+                    <li><p class="lead">Get permission - If the weeds are not on your property, get permission from the owner before you do any work.</p></li>
+                    <li><p class="lead">Get advice - Identify the weeds and plan what you want to plant in their place if that is appropriate. Use the Kiwicare Problem Solver to find out what control method works on the weeds you want to tackle. Plan your control and disposal methods before you start to avoid any unnecessary movement of plants that could spread seeds or fragments that could grow.</p></li>
+                    <li><p class="lead">Large areas - Start small and work in sections. This makes the task seem more manageable.</p></li>
+                    <li><p class="lead">Work from the outside in - Tackle outlying weed patches first to slow the rate of weed spread before starting on the worst areas. Where possible, kill weeds before they fruit or seed, to stop a new generation of weeds growing in the area.</p></li>
+                    <li><p class="lead">Replacement planting - By replacing weeds with natives or non-weedy plants you avoid creating large cleared areas that can allow new different weeds establishing.</p></li>
+                </ul>
+            </div>
+            <!-- Empty space for centering -->
+        <div class="col-lg-1"></div>
+    </div>
+
+    <!-- About BRMM Car Club -->
+    <div class="my-4">
+      <h2 class="display-4 text-success text-center font-weight-bold" style="font-size: smaller;">About Us</h2>
+      <p class="lead text-center" style="font-size: smaller;">The Garden Weed BioSafety Guide website is a comprehensive resource dedicated to promoting garden health and environmental protection by providing basic information on identifying, preventing, and controlling invasive weeds.</p>
+    </div>
+  </div>
+{% endblock %}

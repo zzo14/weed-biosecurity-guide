@@ -38,7 +38,7 @@ def home():
             return redirect(url_for('staff_profile'))
         elif session['userType'] == 'Admin':
             return redirect(url_for('admin_profile'))
-    return render_template("accounts/login.html")
+    return render_template("home.html")
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
@@ -71,7 +71,7 @@ def login():
 @app.route("/register", methods=['GET', 'POST'])
 def register():
     connection = getCursor()
-    if request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'email' in request.form and 'first_name' in request.form and 'last_name' in request.form and 'address' in request.form and 'phone_number' in request.form:
+    if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
         first_name = request.form.get('first_name')
@@ -79,6 +79,10 @@ def register():
         address = request.form.get('address')
         email = request.form.get('email')
         phone_number = request.form.get('phone_number')
+
+        if not (username and password and first_name and last_name and address and email and phone_number):
+            flash("Please fill out the form!", "danger")
+            return redirect(url_for('register'))
 
         if not re.match(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{8,}$', password):
             flash("Password must be at least 8 characters long and conatin uppercase, lowercase, number and special characters.")
@@ -96,8 +100,6 @@ def register():
             return redirect(url_for('login'))
         else:
             flash("Username already exists, please try another one.", "danger")
-    else:
-        flash("Please fill out the form!", "danger")
     return render_template("accounts/register.html")
 
 @app.route('/logout')
@@ -109,7 +111,7 @@ def logout():
    session.pop('password', None)
    session.pop('userType', None)
    # Redirect to login page
-   return redirect(url_for('login'))
+   return redirect(url_for('home'))
 
 @app.route('/gardener_profile', methods=['GET', 'POST'])
 def gardener_profile():
@@ -150,21 +152,24 @@ def change_password():
     id = session['id']
     password_regex = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{8,}$'
     profile_url = url_select()
-    if request.method == 'POST' and 'current_password' in request.form and 'new_password' in request.form and 'confirm_password' in request.form:
+    if request.method == 'POST':
         current_password = request.form.get('current_password')
         new_password = request.form.get('new_password')
         confirm_password = request.form.get('confirm_password')
 
+        if not (current_password and new_password and confirm_password):
+            flash("Please fill out the form!", "danger")
+            return redirect(url_for('change_password'))
 
         if not check_password_hash(session['password'], current_password):
             flash("Current Password is wrong! Please try again.", "danger")
-            return redirect(profile_url) 
+            return redirect(url_for('change_password'))
         if not re.match(password_regex, new_password):
             flash("New password must be at least 8 characters long and conatin uppercase, lowercase, number and special characters.", "danger")
-            return redirect(profile_url)
+            return redirect(url_for('change_password'))
         if new_password != confirm_password:
             flash("New password do not mathc, please try again!", "danger")
-            return redirect(profile_url)
+            return redirect(url_for('change_password'))
         hashed_new_password = generate_password_hash(new_password)
 
         query = "UPDATE userAuth SET password_hash=%s WHERE id=%s"
@@ -172,12 +177,10 @@ def change_password():
         affected_rows = connection.rowcount
         if affected_rows > 0:
             flash("Successfully change password! ", "success")
-            return redirect(profile_url)
+            return redirect(url_for('change_password'))
         else:
             flash("Change password failed. Please try again.", "danger")
-    else:
-        flash("Please fill out the form!", "danger")
-    return redirect(profile_url)
+    return render_template("change_password.html", username=session['username'], userType=session['userType'], profile_url=profile_url)
 
 
 @app.route('/weed_guide')

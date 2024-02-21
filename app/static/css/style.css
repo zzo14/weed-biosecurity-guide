@@ -4,12 +4,18 @@ html, body {
     padding: 0;
 }
 
-.container {
+/* .container {
     margin-left: 150px;
-}
+} */
 
 .profile-card {
-    padding-left: 80px;
+    padding-left: 10%;
+}
+
+.login-card{
+    max-width: 40%; 
+    min-width: 300px; 
+    margin-left: 40%;
 }
 
 /* flash message */
@@ -132,13 +138,18 @@ html, body {
 /* End -botton */
 
 /* navbar */
-/* .navtop {
-    background-color: #e6f6e5;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);;
+.navtop {
+    background-color: #324851;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);;
     height: 60px;
     width: 100%;
     border: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
     transition: background-color 0.3s ease;
+    z-index: 1030; /* high z-index to keep it above other elements */
 }
 .navtop div {
     display: flex;
@@ -156,14 +167,15 @@ html, body {
     font-size: 24px;
     padding: 0 15px;
     margin: 0;
-    color: #333;
+    color: #CDD7D6;
     font-weight: normal;
     transition: color 0.3s ease;
 }
 .navtop div a {
-    padding: 0 20px;
+    display: blcok;
+    padding: 20px;;
     text-decoration: none;
-    color: #666;
+    color: #CDD7D6;
     font-weight: bold;
     transition: color 0.3s ease;
 }
@@ -171,40 +183,42 @@ html, body {
     padding: 2px 8px 0 0;
 }
 .navtop div a:hover {
-    color: #000;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
-} */
+    color: #F0F7F4;
+    background: #285943;
+    border-radius: 8px;
+}
 /* End - navbar */
 
 /* sidebar */
 .sidebar {
-    background-color: #e6f6e5;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);;
-    height: 100vh;
-    width: 250px;
+    background-color: #F0F7F4;
+    box-shadow: 2PX 0 4px rgba(0, 0, 0, 0.5);;
+    width: 220px;
     position: fixed;
     left: 0;
-    top: 0;
+    top: 60PX;
+    bottom: 0;
     overflow-x: hidden;
+    overflow-Y: auto;
     padding-top: 20px;
-    transition: background-color 0.3s ease;
+    transition: all 0.3s;
+    z-index: 1025;
 }
 
 .sidebar h1 {
-    font-size: 24px;
-    color: #333;
+    font-size: 20px;
+    color: #324851;
     font-weight: normal;
     padding: 10px 15px;
 }
 
 .sidebar a {
-    padding: 10px 15px;
+    padding: 10px 20px;
     text-decoration: none;
     font-size: 18px;
-    color: #666;
+    color: #324851;
     display: block;
-    transition: color 0.3s ease;
+    transition: all 0.3s;
 }
 
 .sidebar a i{
@@ -212,8 +226,8 @@ html, body {
 }
 
 .sidebar a:hover{
-    color: #000;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
+    color: #F0F7F4;
+    background: #285943;
+    border-radius: 8px;
 }
 /* End - sidebar */
