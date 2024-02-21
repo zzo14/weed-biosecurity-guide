@@ -1,0 +1,197 @@
+from flask import Flask
+from flask import render_template
+from flask import request
+from flask import redirect
+from flask import url_for
+from flask import flash
+from flask import session
+from werkzeug.security import generate_password_hash
+from werkzeug.security import check_password_hash
+import re
+from datetime import datetime
+import mysql.connector
+from mysql.connector import FieldType
+import app.connect as connect
+from . import app
+
+
+app.secret_key = 'key'
+dbconn = None
+connection = None
+
+def getCursor():
+    global dbconn
+    global connection
+    connection = mysql.connector.connect(user=connect.dbuser, \
+    password=connect.dbpass, host=connect.dbhost, \
+    database=connect.dbname, autocommit=True)
+    dbconn = connection.cursor()
+    return dbconn
+
+#Interface
+@app.route("/")
+def home():
+    if 'loggedin' in session:
+        if session['userType'] == 'Gardener':
+            return redirect(url_for('gardener_profile'))
+        elif session['userType'] == 'Staff':
+            return redirect(url_for('staff_profile'))
+        elif session['userType'] == 'Admin':
+            return redirect(url_for('admin_profile'))
+    return render_template("accounts/login.html")
+
+@app.route("/login", methods=['GET', 'POST'])
+def login():
+    connection = getCursor()
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        query = "SELECT * FROM userauth WHERE username = %s"
+        connection.execute(query, (username,))
+        user = connection.fetchone()
+        print("user", user)
+        if user and check_password_hash(user[2], password):
+            session['loggedin'] = True
+            session['id'] = user[0]
+            session['username'] = user[1]
+            session['password'] = user[2]
+            session['userType'] = user[3]
+            flash("Welcome back! ", "success")
+            if session['userType'] == 'Gardener':
+                return redirect(url_for('gardener_profile'))
+            elif session['userType'] == 'Staff':
+                return redirect(url_for('staff_profile'))
+            elif session['userType'] == 'Admin':
+                return redirect(url_for('admin_profile'))
+            return redirect(url_for('home'))
+        else:
+            flash("Invilid username or password, please try again.", "danger")
+    return render_template("accounts/login.html")
+
+@app.route("/register", methods=['GET', 'POST'])
+def register():
+    connection = getCursor()
+    if request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'email' in request.form and 'first_name' in request.form and 'last_name' in request.form and 'address' in request.form and 'phone_number' in request.form:
+        username = request.form.get('username')
+        password = request.form.get('password')
+        first_name = request.form.get('first_name')
+        last_name = request.form.get('last_name')
+        address = request.form.get('address')
+        email = request.form.get('email')
+        phone_number = request.form.get('phone_number')
+
+        if not re.match(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{8,}$', password):
+            flash("Password must be at least 8 characters long and conatin uppercase, lowercase, number and special characters.")
+            return redirect(url_for('register'))
+
+        hashed_password = generate_password_hash(password) 
+        query = "INSERT INTO userAuth (username, password_hash, userType) VALUES (%s, %s, %s)"
+        connection.execute(query, (username, hashed_password, 'Gardener'))
+        new_id = connection.lastrowid
+        affected_rows = connection.rowcount
+        if new_id and affected_rows > 0:
+            query = "INSERT INTO gardener (gardener_id, username, first_name, last_name, address, email, phone_number, date_joined, status) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+            connection.execute(query, (new_id, username, first_name, last_name, address, email, phone_number, datetime.now(), 'Active'))
+            flash("Successfully register! ", "success")
+            return redirect(url_for('login'))
+        else:
+            flash("Username already exists, please try another one.", "danger")
+    else:
+        flash("Please fill out the form!", "danger")
+    return render_template("accounts/register.html")
+
+@app.route('/logout')
+def logout():
+    # Remove session data, this will log the user out
+   session.pop('loggedin', None)
+   session.pop('id', None)
+   session.pop('username', None)
+   session.pop('password', None)
+   session.pop('userType', None)
+   # Redirect to login page
+   return redirect(url_for('login'))
+
+@app.route('/gardener_profile', methods=['GET', 'POST'])
+def gardener_profile():
+    connection = getCursor()
+    id = session['id']
+    query = "SELECT * FROM gardener WHERE gardener_id = %s"
+    connection.execute(query, (id,))
+    user = connection.fetchone()
+    return render_template("gardener_profile.html", username=session['username'], userType=session['userType'], profile_url=url_for('gardener_profile'), user=user)
+
+@app.route('/update_gardener_profile', methods=['GET', 'POST'])
+def update_gardener_profile():
+    connection = getCursor()
+    id = session['id']
+    if request.method == 'POST' and 'email' in request.form and 'first_name' in request.form and 'last_name' in request.form and 'address' in request.form and 'phone_number' in request.form:
+        first_name = request.form.get('first_name')
+        last_name = request.form.get('last_name')
+        address = request.form.get('address')
+        email = request.form.get('email')
+        phone_number = request.form.get('phone_number')
+
+        query = "UPDATE gardener SET first_name=%s, last_name=%s, address=%s, email=%s, phone_number=%s WHERE gardener_id = %s "
+        connection.execute(query, (first_name, last_name, address, email, phone_number, id))
+        affected_rows = connection.rowcount
+        if affected_rows > 0:
+            flash("Successfully update! ", "success")
+            return redirect(url_for('gardener_profile'))
+        else:
+            flash("Update failed. Please try again.", "danger")
+    else:
+        flash("Please fill out the form!", "danger")
+    return redirect(url_for('gardener_profile'))
+
+
+@app.route('/change_password', methods=['GET', 'POST'])
+def change_password():
+    connection = getCursor()
+    id = session['id']
+    password_regex = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{8,}$'
+    profile_url = url_select()
+    if request.method == 'POST' and 'current_password' in request.form and 'new_password' in request.form and 'confirm_password' in request.form:
+        current_password = request.form.get('current_password')
+        new_password = request.form.get('new_password')
+        confirm_password = request.form.get('confirm_password')
+
+
+        if not check_password_hash(session['password'], current_password):
+            flash("Current Password is wrong! Please try again.", "danger")
+            return redirect(profile_url) 
+        if not re.match(password_regex, new_password):
+            flash("New password must be at least 8 characters long and conatin uppercase, lowercase, number and special characters.", "danger")
+            return redirect(profile_url)
+        if new_password != confirm_password:
+            flash("New password do not mathc, please try again!", "danger")
+            return redirect(profile_url)
+        hashed_new_password = generate_password_hash(new_password)
+
+        query = "UPDATE userAuth SET password_hash=%s WHERE id=%s"
+        connection.execute(query, (hashed_new_password, id,))
+        affected_rows = connection.rowcount
+        if affected_rows > 0:
+            flash("Successfully change password! ", "success")
+            return redirect(profile_url)
+        else:
+            flash("Change password failed. Please try again.", "danger")
+    else:
+        flash("Please fill out the form!", "danger")
+    return redirect(profile_url)
+
+
+@app.route('/weed_guide')
+def weed_guide():
+    profile_url = url_select()
+    return render_template("weed_guide.html", username=session['username'], userType=session['userType'], profile_url=profile_url)
+
+
+
+def url_select():
+    if session['userType'] == 'Gardener':
+        profile_url=url_for('gardener_profile')
+    elif session['userType'] == 'Staff':
+        profile_url=url_for('staff_profile')
+    elif session['userType'] == 'Admin':
+        profile_url=url_for('admin_profile')
+    return profile_url

@@ -82,11 +82,11 @@ INSERT INTO userAuth (username, password_hash, userType) VALUES
     ('admin', 'scrypt:32768:8:1$3RY2MpKJfMBL6y2M$face964ccc797ac918e011d307e0d1b33c4d63ebce4a241d912edc0d498c47861f36ec03a6a39394376a930a982434b2edfa03283f4ea20f0b292c6514fce8e0', 'Admin');
 
 INSERT INTO gardener (gardener_id, username, first_name, last_name, address, email, phone_number, date_joined, status) VALUES
-    (1, 'gardener1', 'John', 'Doe', '121 Main St', 'john.doe@example.com', '123-456-7890', '2024-01-01', 'Active'),
-    (2, 'gardener2', 'Jane', 'Smith', '122 Main St', 'jane.smith@example.com', '123-456-7891', '2024-01-01', 'Active'),
-    (3, 'gardener3', 'Joe', 'Jackson', '123 Main St', 'joe.jackson@example.com', '123-456-7892', '2024-01-01', 'Active'),
-    (4, 'gardener4', 'Jim', 'Milly', '124 Main St', 'jim.milly@example.com', '123-456-7893', '2024-01-01', 'Active'),
-    (5, 'gardener5', 'Jack', 'Johnson', '125 Main St', 'jack.johnson@example.com', '123-456-7894', '2024-01-01', 'Active');
+    (1, 'gardener1', 'John', 'Doe', '121 Main St', 'john.doe@example.com', '0271234567', '2024-01-01', 'Active'),
+    (2, 'gardener2', 'Jane', 'Smith', '122 Main St', 'jane.smith@example.com', '0271235678', '2024-01-01', 'Active'),
+    (3, 'gardener3', 'Joe', 'Jackson', '123 Main St', 'joe.jackson@example.com', '0271237890', '2024-01-01', 'Active'),
+    (4, 'gardener4', 'Jim', 'Milly', '124 Main St', 'jim.milly@example.com', '0272345678', '2024-01-01', 'Active'),
+    (5, 'gardener5', 'Jack', 'Johnson', '125 Main St', 'jack.johnson@example.com', '0272346789', '2024-01-01', 'Active');
 
 INSERT INTO staff (staff_id, username, first_name, last_name, email, work_phone, hire_date, position, department, status) VALUES
     (6, 'staff1', 'Alice', 'Brown', 'alice.brown@example.com', '123-456-7895', '2024-01-01', 'Researcher', 'Botany', 'Active'),
