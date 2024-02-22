@@ -49,7 +49,6 @@ def login():
         query = "SELECT * FROM userauth WHERE username = %s"
         connection.execute(query, (username,))
         user = connection.fetchone()
-        print("user", user)
         if user and check_password_hash(user[2], password):
             session['loggedin'] = True
             session['id'] = user[0]
@@ -186,7 +185,31 @@ def change_password():
 @app.route('/weed_guide')
 def weed_guide():
     profile_url = url_select()
-    return render_template("weed_guide.html", username=session['username'], userType=session['userType'], profile_url=profile_url)
+    connection = getCursor()
+    weed_query = "SELECT * FROM weedguide"
+    weed_img_query = "SELECT * FROM weedimage"
+    connection.execute(weed_query)
+    weed_data = connection.fetchall()
+    connection.execute(weed_img_query)
+    weed_imgs = connection.fetchall()
+    weed_guide = handle_weed_data(weed_data, weed_imgs)
+    return render_template("weed_guide.html", username=session['username'], userType=session['userType'], profile_url=profile_url, weed_guide=weed_guide)
+
+def handle_weed_data(data, imgs):
+    combined_data = []
+    for weed in data:
+        weed_data = list(weed)
+        not_primary = []
+        for img in imgs:
+            if weed[0] == img[1]:
+                if img[3] == 1:
+                    weed_data.append(img[2])
+                else:
+                    not_primary.append(img[2])
+        weed_data.append(not_primary)
+        combined_data.append(weed_data)
+    return combined_data
+
 
 
 
