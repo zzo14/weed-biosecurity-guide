@@ -10,6 +10,77 @@
 {% endblock %}
 
 {% block content %}
-<h2>Weed Guide Page</h2>
-<p>Welcome back, {{ userType }} {{ username }}!</p>
+{{ weed_data}}
+<div class="container mt-5 bg-light rounded">
+    <!-- Heading section -->
+    <div class="text-center py-3 pt-5">
+        <h2 class="display-4 text-success font-weight-bold">Weed Guide</h1>
+    </div>
+
+    <div class="row justify-content-around">
+        {% for weed in weed_guide %}
+        <div class="col-md-3 col-sm-6 my-5">
+            <div class="card" data-bs-toggle="modal" data-bs-target="#myModal{{ loop.index }}">
+                <img src={{weed[7]}} class="img-fluid rounded border shadow-sm" alt="Image showcasing weed">
+                <div class="card-body">
+                    <h5 class="card-title"><ins>{{weed[1]}}</ins></h5>
+                    <p class="card-text"> {{weed[3]}}</p>
+                </div>
+
+                <!-- Modal -->
+                <div class="modal fade" id="myModal{{ loop.index }}" tabindex="-1" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-xl">
+                        <div class="modal-content card">
+                            <div class="modal-header">
+                                <h5 class="modal-title">{{weed[1]}}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row align-items-start">
+                                    <div class="col-7 d-flex justify-content-center align-items-center">
+                                        <img src={{weed[7]}} class="img-fluid rounded border shadow-sm" alt="Image showcasing weed" style="min-width: 200px; width: 100%; height: auto;">
+                                    </div>
+                                    <div class="col-5">
+                                        <dl class="row">
+                                            <div class="col-sm-12 col-md-12">
+                                                <dt class="col-sm-4 font-weight-bold text-success">Scientific Name</dt>
+                                                <dd class="col-sm-8">{{ weed[2] }}</dd>
+                                            </div>
+                                            <div class="col-sm-12 col-md-12">
+                                                <dt class="col-sm-4 font-weight-bold text-success">Description</dt>
+                                                <dd class="col-sm-8">{{ weed[4] }}</dd>
+                                            </div>
+                                            <div class="col-sm-12 col-md-12">
+                                                <dt class="col-sm-4 font-weight-bold text-success">Impacts</dt>
+                                                <dd class="col-sm-8">{{ weed[5] }}</dd>
+                                            </div>
+                                            <div class="col-sm-12 col-md-12">
+                                                <dt class="col-sm-4 font-weight-bold text-success">Control Methods</dt>
+                                                <dd class="col-sm-8">{{ weed[6] }}</dd>
+                                            </div>
+                                        </dl>
+                                    </div>
+                                </div>
+                                {% if weed[8]|length > 0 %}
+                                <div class="row">
+                                    <div class="col-12">
+                                        <h6>More Images</h6>
+                                    </div>
+                                    {% for image in weed[8] %}
+                                    <div class="col-6">
+                                        <img src={{image}} class="img-fluid rounded border shadow-sm" alt="Image showcasing weed">
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
 {% endblock %}
