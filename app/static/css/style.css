@@ -231,3 +231,11 @@ html, body {
     border-radius: 8px;
 }
 /* End - sidebar */
+
+dl dd {
+    padding-bottom: 0.5rem;
+}
+
+dl dt {
+    padding-top: 0.5rem;
+}
