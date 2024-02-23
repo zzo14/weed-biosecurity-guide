@@ -3,12 +3,62 @@
 {% block title %}Staff Home{% endblock %}
 
 {% block navbar %}
-{% endblock %}
-
-{% block header %}
+{% include 'includes/navbar.html' %}
+{% include 'includes/sidebar.html' %}
 {% endblock %}
 
 {% block content %}
-<h2>{{ userType }} Page</h2>
-<p>Welcome back, {{ userType }} {{ username }}!</p>
+<br/>
+<br/>
+<br/>
+<br/>
+<div class="profile-card ms-auto">
+    <div class="row">
+        <div class="col-lg-10 mx-auto">
+            <div class="card mt-5">
+                <div class="card-header bg-success text-white">
+                    <h4 class="my-0">Welcome {{ staff[1] }}</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('update_SA_profile') }}">
+                        <div class="row justify-content-around">
+                            <div class="mb-3 col-6">
+                                <label for="first_name" class="form-label">First Name</label>
+                                <input type="text" class="form-control" id="first_name" name="first_name" value="{{ staff[2] }}" required>
+                            </div>
+                            <div class="mb-3 col-6">
+                                <label for="last_name" class="form-label">Lasr Name</label>
+                                <input type="text" class="form-control" id="last_name" name="last_name" value="{{ staff[3] }}" required>
+                            </div>
+                        </div>
+                        <div class="row justify-content-around">
+                            <div class="mb-3 col-6">
+                                <label for="work_phone" class="form-label">Work Phone</label>
+                                <input type="tel" pattern="[0-9]{10}" class="form-control" name="work_phone" id="work_phone" value="{{ staff[5] }}"required>
+                            </div>
+                            <div class="mb-3 col-6">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" value="{{ staff[4] }}" required>
+                            </div>
+                        </div>
+                        <div class="row justify-content-around">
+                            <div class="mb-3 col-6">
+                                <label for="position" class="form-label">Position</label>
+                                <input type="text" class="form-control" id="position" name="position" value="{{ staff[7] }}" required>
+                            </div>
+                            <div class="mb-3 col-6">
+                                <label for="department" class="form-label">Department</label>
+                                <input type="text" class="form-control" id="department" name="department" value="{{ staff[8] }}" required>
+                            </div>
+                        </div>  
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-success btn-block">Update Information</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <br/>
+        </div>
+    </div>
+</div>
 {% endblock %}
