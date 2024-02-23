@@ -239,3 +239,21 @@ dl dd {
 dl dt {
     padding-top: 0.5rem;
 }
+
+/* password input */
+.input-group {
+    position: relative;
+}
+
+.input-group-append {
+    position: absolute;
+    right: 10px;
+    top: 6px;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.input-group .form-control {
+    padding-right: 30px;
+}
+/* End - password input */
