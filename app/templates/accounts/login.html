@@ -25,7 +25,12 @@
                     </div>
                     <div class="form-group">
                         <label for="password">Password</label>
-                        <input type="password" class="form-control" name="password" id="password" required>
+                        <div class="input-group">
+                            <input type="password" class="form-control" name="password" id="password" required>
+                            <div class="input-group-append">
+                                <i class="fa-regular fa-eye" aria-hidden="true" onclick="togglePasswordVisibility('password')"></i>
+                            </div>
+                        </div>
                     </div>
                     <br/>
                     <div class="text-center">
