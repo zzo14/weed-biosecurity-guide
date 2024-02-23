@@ -125,12 +125,16 @@ def gardener_profile():
 def update_gardener_profile():
     connection = getCursor()
     id = session['id']
-    if request.method == 'POST' and 'email' in request.form and 'first_name' in request.form and 'last_name' in request.form and 'address' in request.form and 'phone_number' in request.form:
+    if request.method == 'POST':
         first_name = request.form.get('first_name')
         last_name = request.form.get('last_name')
         address = request.form.get('address')
         email = request.form.get('email')
         phone_number = request.form.get('phone_number')
+
+        if not (first_name and last_name and address and email and phone_number):
+            flash("Please fill out the form!", "danger")
+            return redirect(url_for('gardener_profile'))
 
         query = "UPDATE gardener SET first_name=%s, last_name=%s, address=%s, email=%s, phone_number=%s WHERE gardener_id = %s "
         connection.execute(query, (first_name, last_name, address, email, phone_number, id))
@@ -140,9 +144,46 @@ def update_gardener_profile():
             return redirect(url_for('gardener_profile'))
         else:
             flash("Update failed. Please try again.", "danger")
-    else:
-        flash("Please fill out the form!", "danger")
     return redirect(url_for('gardener_profile'))
+
+@app.route('/staff_profile', methods=['GET', 'POST'])
+def staff_profile():
+    connection = getCursor()
+    id = session['id']
+    query = "SELECT * FROM staff WHERE staff_id = %s"
+    connection.execute(query, (id,))
+    staff = connection.fetchone()
+    return render_template("staff_profile.html", username=session['username'], userType=session['userType'], profile_url=url_for('staff_profile'), staff=staff)
+
+@app.route('/update_SA_profile', methods=['GET', 'POST'])
+def update_SA_profile():
+    connection = getCursor()
+    id = session['id']
+    usertype = session['userType']
+    profile_url = url_select()
+    if request.method == 'POST':
+        first_name = request.form.get('first_name')
+        last_name = request.form.get('last_name')
+        work_phone = request.form.get('work_phone')
+        email = request.form.get('email')
+        position = request.form.get('position')
+        department = request.form.get('department')
+
+        if not (first_name and last_name and work_phone and email and position and department):
+            flash("Please fill out the form!", "danger")
+            return redirect(profile_url)
+        if usertype == 'Admin':
+            query = "UPDATE administration SET first_name=%s, last_name=%s, email=%s, work_phone=%s, position=%s, department=%s WHERE admin_id = %s "
+        else:
+            query = "UPDATE staff SET first_name=%s, last_name=%s, email=%s, work_phone=%s, position=%s, department=%s WHERE staff_id = %s "
+        connection.execute(query, (first_name, last_name, email, work_phone, position, department, id))
+        affected_rows = connection.rowcount
+        if affected_rows > 0:
+            flash("Successfully update! ", "success")
+            return redirect(profile_url)
+        else:
+            flash("Update failed. Please try again.", "danger")
+    return redirect(profile_url)
 
 
 @app.route('/change_password', methods=['GET', 'POST'])
