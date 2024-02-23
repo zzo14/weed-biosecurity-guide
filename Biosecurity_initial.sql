@@ -89,12 +89,12 @@ INSERT INTO gardener (gardener_id, username, first_name, last_name, address, ema
     (5, 'gardener5', 'Jack', 'Johnson', '125 Main St', 'jack.johnson@example.com', '0272346789', '2024-01-01', 'Active');
 
 INSERT INTO staff (staff_id, username, first_name, last_name, email, work_phone, hire_date, position, department, status) VALUES
-    (6, 'staff1', 'Alice', 'Brown', 'alice.brown@example.com', '123-456-7895', '2024-01-01', 'Researcher', 'Botany', 'Active'),
-    (7, 'staff2', 'Bob', 'Green', 'bob.green@example.com', '123-456-7896', '2024-01-01', 'Technician', 'Maintenance', 'Active'),
-    (8, 'staff3', 'Charlie', 'Blue', 'charlie.blue@example.com', '123-456-7897', '2024-01-01', 'Agent', 'Operations', 'Active');
+    (6, 'staff1', 'Alice', 'Brown', 'alice.brown@example.com', '0212345678', '2024-01-01', 'Researcher', 'Botany', 'Active'),
+    (7, 'staff2', 'Bob', 'Green', 'bob.green@example.com', '0213456789', '2024-01-01', 'Technician', 'Maintenance', 'Active'),
+    (8, 'staff3', 'Charlie', 'Blue', 'charlie.blue@example.com', '0214567890', '2024-01-01', 'Agent', 'Operations', 'Active');
 
 INSERT INTO administration (admin_id, username, first_name, last_name, email, work_phone, hire_date, position, department, status) VALUES
-    (9, 'admin', 'Diana', 'White', 'diana.white@example.com', '123-456-7898', '2024-01-01', 'Manager', 'Administration', 'Active');
+    (9, 'admin', 'Diana', 'White', 'diana.white@example.com', '0241234567', '2024-01-01', 'Manager', 'Administration', 'Active');
 
 INSERT INTO weedGuide (common_name, scientific_name, weed_type, description, impacts, control_methods) VALUES
     ('Annual Poa', 'Poa annua', 'Grass', 'A samll grass often unnoticed in turf.','Can die off leaving bare ground, making turf look patchy.', 'Fungicide spraying, herbicides like Ethofumesate and Pendimethalin.'),
