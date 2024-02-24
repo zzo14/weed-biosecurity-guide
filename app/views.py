@@ -62,7 +62,7 @@ def login():
                 return redirect(url_for('staff_profile'))
             elif session['userType'] == 'Admin':
                 return redirect(url_for('admin_profile'))
-            return redirect(url_for('home'))
+            return redirect(url_for('login'))
         else:
             flash("Invilid username or password, please try again.", "danger")
     return render_template("accounts/login.html")
@@ -114,12 +114,15 @@ def logout():
 
 @app.route('/gardener_profile', methods=['GET', 'POST'])
 def gardener_profile():
-    connection = getCursor()
-    id = session['id']
-    query = "SELECT * FROM gardener WHERE gardener_id = %s"
-    connection.execute(query, (id,))
-    user = connection.fetchone()
-    return render_template("gardener_profile.html", username=session['username'], userType=session['userType'], profile_url=url_for('gardener_profile'), user=user)
+    if 'loggedin' in session:
+        connection = getCursor()
+        id = session['id']
+        query = "SELECT * FROM gardener WHERE gardener_id = %s"
+        connection.execute(query, (id,))
+        user = connection.fetchone()
+        return render_template("gardener_profile.html", username=session['username'], userType=session['userType'], profile_url=url_for('gardener_profile'), user=user)
+    else:
+        return redirect(url_for('home'))
 
 @app.route('/update_gardener_profile', methods=['GET', 'POST'])
 def update_gardener_profile():
@@ -148,12 +151,19 @@ def update_gardener_profile():
 
 @app.route('/staff_profile', methods=['GET', 'POST'])
 def staff_profile():
-    connection = getCursor()
-    id = session['id']
-    query = "SELECT * FROM staff WHERE staff_id = %s"
-    connection.execute(query, (id,))
-    staff = connection.fetchone()
-    return render_template("staff_profile.html", username=session['username'], userType=session['userType'], profile_url=url_for('staff_profile'), staff=staff)
+    if 'loggedin' in session:
+        if session['userType'] == 'Staff':
+            connection = getCursor()
+            id = session['id']
+            query = "SELECT * FROM staff WHERE staff_id = %s"
+            connection.execute(query, (id,))
+            staff = connection.fetchone()
+            return render_template("staff_profile.html", username=session['username'], userType=session['userType'], profile_url=url_for('staff_profile'), staff=staff)
+        else:
+            flash("Illegal Access!", "danger")
+            return redirect(url_for('home'))
+    else:
+        return redirect(url_for('home'))
 
 @app.route('/update_SA_profile', methods=['GET', 'POST'])
 def update_SA_profile():
