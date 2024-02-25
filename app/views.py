@@ -102,8 +102,10 @@ def register():
         if new_id and affected_rows > 0:
             query = "INSERT INTO gardener (gardener_id, username, first_name, last_name, address, email, phone_number, date_joined, status) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
             connection.execute(query, (new_id, username, first_name, last_name, address, email, phone_number, datetime.now(), 'Active'))
-            flash("Successfully register! ", "success")
-            return redirect(url_for('login'))
+            affected_rows = connection.rowcount
+            if affected_rows > 0:
+                flash("Successfully register! ", "success")
+                return redirect(url_for('login'))
         else:
             flash("Username already exists, please try another one.", "danger")
     return render_template("accounts/register.html")
@@ -189,6 +191,7 @@ def update_SA_profile():
         if not (first_name and last_name and work_phone and email and position and department):
             flash("Please fill out the form!", "danger")
             return redirect(profile_url)
+        
         if usertype == 'Admin':
             query = "UPDATE administration SET first_name=%s, last_name=%s, email=%s, work_phone=%s, position=%s, department=%s WHERE admin_id = %s "
         else:
@@ -251,7 +254,6 @@ def weed_guide():
     connection.execute(weed_img_query)
     weed_imgs = connection.fetchall()
     weed_guide = handle_weed_data(weed_data, weed_imgs)
-    print(weed_guide)
     return render_template("weed_guide.html", username=session['username'], userType=session['userType'], profile_url=profile_url, weed_guide=weed_guide)
 
 @app.route('/weed_guide/add_new_weed', methods=['GET', 'POST'])
@@ -285,11 +287,33 @@ def add_new_weed():
                     connection.execute(query, (new_id, filename, 0))
             except:
                 pass
-            flash("Successfully add a new weed! ", "success")
-            return redirect(url_for('weed_guide'))
+            affected_rows = connection.rowcount
+            if affected_rows > 0:
+                flash("Successfully add a new weed! ", "success")
+                return redirect(url_for('weed_guide'))
         else:
             flash("Add failed. Please try again.", "danger")
     return redirect(url_for('weed_guide'))
+
+@app.route('/weed_guide/delete_weed/<int:weed_id>', methods=['GET', 'POST'])
+def delete_weed(weed_id):
+    connection = getCursor()
+    if request.method == 'POST':
+        query = "DELETE FROM weedimage WHERE weed_id = %s"
+        connection.execute(query, (weed_id,))
+        affected_rows = connection.rowcount
+        if affected_rows > 0:
+            query = "DELETE FROM weedguide WHERE weed_id = %s"
+            connection.execute(query, (weed_id,))
+            affected_rows = connection.rowcount
+            if affected_rows > 0:
+                flash("Successfully delete the weed!", "success")
+                return redirect(url_for('weed_guide'))
+        else:
+            flash("Delete failed. Please try again.", "danger")
+    return redirect(url_for('weed_guide'))
+
+
 
 
 def handle_weed_data(data, imgs):
