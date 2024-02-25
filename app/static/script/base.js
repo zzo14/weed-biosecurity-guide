@@ -18,17 +18,6 @@ function togglePasswordVisibility(password_id) {
     toggle_icon.className = isVisibility ? 'fa-regular fa-eye' : 'fa-regular fa-eye-slash';
 };
 
-function toggleManageButton() {
-    var manageButton = document.querySelectorAll('.manage-buttons');
-    manageButton.forEach(function(button) {
-        if (button.classList.contains('d-none')) {
-            button.classList.remove('d-none');
-        } else {
-            button.classList.add('d-none');
-        }
-    });
-};
-
 function previewImg(event) {
     var files = event.target.files;
     var previewContainer = event.target.getAttribute('data-preview')
