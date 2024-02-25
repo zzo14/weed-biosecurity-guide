@@ -21,9 +21,6 @@
         <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addWeedModal">
             Add Weed
         </button>
-        <button type="button" class="btn btn-success" onclick="toggleManageButton()">
-            Manage Weeds
-        </button>
 
         <div class="modal fade" id="addWeedModal" tabindex="-1" aria-labelledby="addWeedModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-xl">
@@ -80,10 +77,12 @@
         </div>
     </div>
     {% endif %}
+
+
     <div class="row">
         {% for weed in weed_guide %}
         <div class="col-md-3 col-sm-6 mb-5">
-            <div class="card" data-bs-toggle="modal" data-bs-target="#myModal{{ loop.index }}">
+            <div class="card" data-bs-toggle="modal" data-bs-target="#viewWeedModal{{ loop.index }}">
                 <img src="/static/images/db/{{weed[7]}}" class="img-fluid rounded border shadow-sm" alt="Image showcasing weed">
                 <div class="card-body">
                     <div class="row">
@@ -91,22 +90,29 @@
                             <h5 class="card-title"><ins>{{weed[1]}}</ins></h5>
                             <p class="card-text"> {{weed[3]}}</p>
                         </div>
-                        <div class="col-4 d-none manage-buttons mt-3">
-                            <i class="fa-regular fa-pen-to-square" style="font-size: 1.3rem; margin-right: 10px;"></i>
-                            <i class="fa-regular fa-trash-can" style="font-size: 1.3rem; margin-right: 3px"></i>
+                        {% if userType == 'Admin' or userType == 'Staff' %}
+                        <div class="col-4 manage-buttons mt-3">
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <button type="button" class="btn btn-link btn-sm">
+                                    <i class="fa-regular fa-pen-to-square" style="font-size: 1.3rem;"></i>
+                                </button>
+                                <button type="button" class="btn btn-link btn-sm" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal{{ loop.index }}">
+                                    <i class="fa-regular fa-trash-can" style="font-size: 1.3rem;"></i>
+                                </button>
+                            </div>
                         </div>
+                        {% endif %}
                     </div>
                 </div>
 
-                <!-- Modal -->
-                <div class="modal fade" id="myModal{{ loop.index }}" tabindex="-1" aria-labelledby="viewWeedModalLabel"
+                <!-- View Weed Modal -->
+                <div class="modal fade" id="viewWeedModal{{ loop.index }}" tabindex="-1" aria-labelledby="viewWeedModalLabel"
                     aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered modal-xl">
                         <div class="modal-content card">
                             <div class="modal-header">
                                 <h5 class="modal-title">{{weed[1]}}</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
                                 <div class="row align-items-start">
@@ -153,6 +159,28 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Delete Confitmation Modal -->
+            <div class="modal fade" id="deleteConfirmModal{{ loop.index }}" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-xl">
+                    <div class="modal-content card">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Confirm delete {{weed[1]}}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to delete {{weed[1]}}?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Close</button>
+                            <form method="POST" action="{{ url_for('delete_weed', weed_id=weed[0]) }}">
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
         {% endfor %}
     </div>
