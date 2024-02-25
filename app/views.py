@@ -7,6 +7,7 @@ from flask import flash
 from flask import session
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
+from werkzeug.utils import secure_filename
 import re
 from datetime import datetime
 from datetime import timedelta
@@ -14,13 +15,15 @@ import mysql.connector
 from mysql.connector import FieldType
 import app.connect as connect
 from . import app
-import base64;
+import os
 
 
 app.secret_key = 'key'
 app.permanent_session_lifetime = timedelta(hours=24)
 dbconn = None
 connection = None
+UPLOAD_FOLDER = os.path.join(app.root_path, 'static/images/db')
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 def getCursor():
     global dbconn
@@ -248,6 +251,7 @@ def weed_guide():
     connection.execute(weed_img_query)
     weed_imgs = connection.fetchall()
     weed_guide = handle_weed_data(weed_data, weed_imgs)
+    print(weed_guide)
     return render_template("weed_guide.html", username=session['username'], userType=session['userType'], profile_url=profile_url, weed_guide=weed_guide)
 
 @app.route('/weed_guide/add_new_weed', methods=['GET', 'POST'])
@@ -260,11 +264,9 @@ def add_new_weed():
         description = request.form.get('description')
         impacts = request.form.get('impacts')
         control_methods = request.form.get('control_methods')
-        primary_image = request.files['primary_image']
-
-        img_64 = convertTo64(primary_image)
-
-        if not (common_name and scientific_name and weed_type and description and impacts and control_methods and primary_image):
+        images = request.files.getlist('primary_image')
+        
+        if not (common_name and scientific_name and weed_type and description and impacts and control_methods and images):
             flash("Please fill out the form!", "danger")
             return redirect(url_for('weed_guide'))
         
@@ -272,9 +274,17 @@ def add_new_weed():
         connection.execute(query, (common_name, scientific_name, weed_type, description, impacts, control_methods))
         new_id = connection.lastrowid
         affected_rows = connection.rowcount
+
         if new_id and affected_rows > 0:
-            query = "INSERT INTO weedImage (weed_id, image_url, is_primary) VALUES (%s, %s, %s)"
-            connection.execute(query, (new_id, img_64, 1))
+            query = "INSERT INTO weedImage (weed_id, image_name, is_primary) VALUES (%s, %s, %s)"
+            primary_filename = save_image(images[0])
+            connection.execute(query, (new_id, primary_filename, 1))
+            try:
+                for image in images[1:]:
+                    filename = save_image(image)
+                    connection.execute(query, (new_id, filename, 0))
+            except:
+                pass
             flash("Successfully add a new weed! ", "success")
             return redirect(url_for('weed_guide'))
         else:
@@ -298,9 +308,11 @@ def handle_weed_data(data, imgs):
         combined_data.append(weed_data)
     return combined_data
 
-def convertTo64(file):
-    img = file.read()
-    return base64.b64encode(img).decode('utf-8')
+def save_image(file):
+    filename = secure_filename(file.filename)
+    img_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    file.save(img_path)
+    return filename
 
 
 def url_select():
