@@ -9,13 +9,16 @@ from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
 import re
 from datetime import datetime
+from datetime import timedelta
 import mysql.connector
 from mysql.connector import FieldType
 import app.connect as connect
 from . import app
+import base64;
 
 
 app.secret_key = 'key'
+app.permanent_session_lifetime = timedelta(hours=24)
 dbconn = None
 connection = None
 
@@ -50,6 +53,7 @@ def login():
         connection.execute(query, (username,))
         user = connection.fetchone()
         if user and check_password_hash(user[2], password):
+            session.permanent = True
             session['loggedin'] = True
             session['id'] = user[0]
             session['username'] = user[1]
@@ -124,7 +128,7 @@ def gardener_profile():
     else:
         return redirect(url_for('home'))
 
-@app.route('/update_gardener_profile', methods=['GET', 'POST'])
+@app.route('/gardener_profile/update_gardener_profile', methods=['GET', 'POST'])
 def update_gardener_profile():
     connection = getCursor()
     id = session['id']
@@ -246,29 +250,67 @@ def weed_guide():
     weed_guide = handle_weed_data(weed_data, weed_imgs)
     return render_template("weed_guide.html", username=session['username'], userType=session['userType'], profile_url=profile_url, weed_guide=weed_guide)
 
+@app.route('/weed_guide/add_new_weed', methods=['GET', 'POST'])
+def add_new_weed():
+    connection = getCursor()
+    if request.method == 'POST':
+        common_name = request.form.get('common_name')
+        scientific_name = request.form.get('scientific_name')
+        weed_type = request.form.get('weed_type')
+        description = request.form.get('description')
+        impacts = request.form.get('impacts')
+        control_methods = request.form.get('control_methods')
+        primary_image = request.files['primary_image']
+
+        img_64 = convertTo64(primary_image)
+
+        if not (common_name and scientific_name and weed_type and description and impacts and control_methods and primary_image):
+            flash("Please fill out the form!", "danger")
+            return redirect(url_for('weed_guide'))
+        
+        query = "INSERT INTO weedGuide (common_name, scientific_name, weed_type, description, impacts, control_methods) VALUES (%s, %s, %s, %s, %s, %s)"
+        connection.execute(query, (common_name, scientific_name, weed_type, description, impacts, control_methods))
+        new_id = connection.lastrowid
+        affected_rows = connection.rowcount
+        if new_id and affected_rows > 0:
+            query = "INSERT INTO weedImage (weed_id, image_url, is_primary) VALUES (%s, %s, %s)"
+            connection.execute(query, (new_id, img_64, 1))
+            flash("Successfully add a new weed! ", "success")
+            return redirect(url_for('weed_guide'))
+        else:
+            flash("Add failed. Please try again.", "danger")
+    return redirect(url_for('weed_guide'))
+
+
 def handle_weed_data(data, imgs):
     combined_data = []
     for weed in data:
-        weed_data = list(weed)
+        weed_data = [item.decode('utf-8') if isinstance(item, bytes) else item for item in weed]
         not_primary = []
         for img in imgs:
             if weed[0] == img[1]:
+                img_data = [item.decode('utf-8') if isinstance(item, bytes) else item for item in img]
                 if img[3] == 1:
-                    weed_data.append(img[2])
+                    weed_data.append(img_data[2]), 
                 else:
-                    not_primary.append(img[2])
+                    not_primary.append(img_data[2])
         weed_data.append(not_primary)
         combined_data.append(weed_data)
     return combined_data
 
-
+def convertTo64(file):
+    img = file.read()
+    return base64.b64encode(img).decode('utf-8')
 
 
 def url_select():
-    if session['userType'] == 'Gardener':
+    user_type = session['userType']
+    if user_type == 'Gardener':
         profile_url=url_for('gardener_profile')
-    elif session['userType'] == 'Staff':
+    elif user_type == 'Staff':
         profile_url=url_for('staff_profile')
-    elif session['userType'] == 'Admin':
+    elif user_type == 'Admin':
         profile_url=url_for('admin_profile')
+    else:
+        profile_url=url_for('home')
     return profile_url
