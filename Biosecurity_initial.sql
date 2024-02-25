@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS weedGuide (
 CREATE TABLE IF NOT EXISTS weedImage (
     image_id INT PRIMARY KEY AUTO_INCREMENT,
     weed_id INT NOT NULL,
-    image_url VARCHAR(255) NOT NULL,
+    image_name VARCHAR(100) NOT NULL,
     is_primary BOOLEAN NOT NULL,
     FOREIGN KEY (weed_id) REFERENCES weedGuide(weed_id)
 );
@@ -118,25 +118,25 @@ INSERT INTO weedGuide (common_name, scientific_name, weed_type, description, imp
     ('Turf Speedwell', 'Veronica serpyllifolia', 'Perennial', 'Turf speedwell is a small perennial weed with white flowers, common in turf and pastures.', 'Forms dense mats in turf, tolerant of many turf herbicides.', 'Best controlled with a mixture of mecoprop and ioxynil, may require re-treatment.'),
     ('Twin Cress', 'Lepidium didymum', 'Annual', 'Twin cress is a small weed that starts as a rosette and sends out prostrate stems, common in crops and gardens.', 'Can cause milk taint in dairy farms, forms mats on the ground.', 'Controlled by MCPB or MCPA in young pastures, flumetsulam before the 4-leaf stage, and various turf herbicides in lawns.');
 
-INSERT INTO weedImage (weed_id, image_url, is_primary) VALUES
-    (1, 'https://d2ub1k1pknil0e.cloudfront.net/media/images/annual_poa_N1_.width-400.format-webp.webp', TRUE),
-    (2, 'https://d2ub1k1pknil0e.cloudfront.net/media/images/nightshadeB1.width-400.format-webp.webp', TRUE),
-    (3, 'https://d2ub1k1pknil0e.cloudfront.net/media/images/blackberryB1.width-400.format-webp.webp', TRUE),
-    (4, 'https://d2ub1k1pknil0e.cloudfront.net/media/images/bracken1.width-400.format-webp.webp', TRUE),
-    (5, 'https://d2ub1k1pknil0e.cloudfront.net/media/images/daisy_1.width-400.format-webp.webp', TRUE),
-    (6, 'https://d2ub1k1pknil0e.cloudfront.net/media/images/dandelionB1.width-400.format-webp.webp', TRUE),
-    (7, 'https://d2ub1k1pknil0e.cloudfront.net/media/images/fathen_N1.width-400.format-webp.webp', TRUE),
-    (8, 'https://d2ub1k1pknil0e.cloudfront.net/media/images/fiddleB2.width-400.format-webp.webp', TRUE),
-    (9, 'https://d2ub1k1pknil0e.cloudfront.net/media/images/ivy_N1.width-400.format-webp.webp', TRUE),
-    (10, 'https://d2ub1k1pknil0e.cloudfront.net/media/images/mallowB1.width-400.format-webp.webp', TRUE),
-    (11, 'https://d2ub1k1pknil0e.cloudfront.net/media/images/manuka_N2.width-400.format-webp.webp', TRUE),
-    (12, 'https://d2ub1k1pknil0e.cloudfront.net/media/images/mouse-ear_hawkweed_N1.width-400.format-webp.webp', TRUE),
-    (13, 'https://d2ub1k1pknil0e.cloudfront.net/media/images/ragwort_N1.width-400.format-webp.webp', TRUE),
-    (14, 'https://d2ub1k1pknil0e.cloudfront.net/media/images/red_dead-nettle_N1.width-400.format-webp.webp', TRUE),
-    (15, 'https://d2ub1k1pknil0e.cloudfront.net/media/images/redroot_N1.width-400.format-webp.webp', TRUE),
-    (16, 'https://d2ub1k1pknil0e.cloudfront.net/media/images/scarletB1.width-400.format-webp.webp', TRUE),
-    (17, 'https://d2ub1k1pknil0e.cloudfront.net/media/images/tauhinuB2.width-400.format-webp.webp', TRUE),
-    (18, 'https://d2ub1k1pknil0e.cloudfront.net/media/images/wandJewB1.width-400.format-webp.webp', TRUE),
-    (19, 'https://d2ub1k1pknil0e.cloudfront.net/media/images/turf_speedwell_N1.width-400.format-webp.webp', TRUE),
-    (20, 'https://d2ub1k1pknil0e.cloudfront.net/media/images/Twin_cress_N1.width-400.format-webp.webp', TRUE);
+INSERT INTO weedImage (weed_id, image_name, is_primary) VALUES
+    (1, 'annual_poa_N1_.width-400.format-webp.webp', TRUE),
+    (2, 'nightshadeB1.width-400.format-webp.webp', TRUE),
+    (3, 'blackberryB1.width-400.format-webp.webp', TRUE),
+    (4, 'bracken1.width-400.format-webp.webp', TRUE),
+    (5, 'daisy_1.width-400.format-webp.webp', TRUE),
+    (6, 'dandelionB1.width-400.format-webp.webp', TRUE),
+    (7, 'fathen_N1.width-400.format-webp.webp', TRUE),
+    (8, 'fiddleB2.width-400.format-webp.webp', TRUE),
+    (9, 'ivy_N1.width-400.format-webp.webp', TRUE),
+    (10, 'mallowB1.width-400.format-webp.webp', TRUE),
+    (11, 'manuka_N2.width-400.format-webp.webp', TRUE),
+    (12, 'mouse-ear_hawkweed_N1.width-400.format-webp.webp', TRUE),
+    (13, 'ragwort_N1.width-400.format-webp.webp', TRUE),
+    (14, 'red_dead-nettle_N1.width-400.format-webp.webp', TRUE),
+    (15, 'redroot_N1.width-400.format-webp.webp', TRUE),
+    (16, 'scarletB1.width-400.format-webp.webp', TRUE),
+    (17, 'tauhinuB2.width-400.format-webp.webp', TRUE),
+    (18, 'wandJewB1.width-400.format-webp.webp', TRUE),
+    (19, 'turf_speedwell_N1.width-400.format-webp.webp', TRUE),
+    (20, 'Twin_cress_N1.width-400.format-webp.webp', TRUE);
     
