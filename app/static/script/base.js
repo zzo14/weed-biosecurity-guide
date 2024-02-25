@@ -31,7 +31,8 @@ function toggleManageButton() {
 
 function previewImg(event) {
     var files = event.target.files;
-    var imgPreviewContainer = document.getElementById('image-preview-container');
+    var previewContainer = event.target.getAttribute('data-preview')
+    var imgPreviewContainer = document.getElementById(previewContainer);
     imgPreviewContainer.innerHTML = '';
 
     for (var i = 0; i < files.length; i++) {
