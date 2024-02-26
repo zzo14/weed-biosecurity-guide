@@ -33,42 +33,43 @@
                         <form method="POST" action="{{ url_for('add_new_weed') }}" enctype="multipart/form-data">
                             <div class="row justify-content-around">
                                 <div class="mb-3 col-5">
-                                    <label for="common_name" class="form-label">Common Name</label>
+                                    <label for="common_name" class="form-label font-weight-bold text-success">Common Name</label>
                                     <input type="text" class="form-control" id="common_name" name="common_name" required>
                                 </div>
                                 <div class="mb-3 col-5">
-                                    <label for="scientific_name" class="form-label">Scientific Name</label>
+                                    <label for="scientific_name" class="form-label font-weight-bold text-success">Scientific Name</label>
                                     <input type="text" class="form-control" id="scientific_name" name="scientific_name" required>
                                 </div>
                                 <div class="mb-3 col-2">
-                                    <label for="weed_type" class="form-label">Weed Type</label>
+                                    <label for="weed_type" class="form-label font-weight-bold text-success">Weed Type</label>
                                     <input type="text" class="form-control" id="weed_type" name="weed_type" required>
                                 </div>
                             </div>
                             <div class="mb-3">
-                                <label for="description" class="form-label">Description</label>
+                                <label for="description" class="form-label font-weight-bold text-success">Description</label>
                                 <textarea class="form-control" id="description" name="description" rows="2" required> </textarea>
                             </div>
                             <div class="mb-3">
-                                <label for="impacts" class="form-label">Impacts</label>
+                                <label for="impacts" class="form-label font-weight-bold text-success">Impacts</label>
                                 <textarea class="form-control" id="impacts" name="impacts" rows="2" required> </textarea>
                             </div>
                             <div class="mb-3">
-                                <label for="control_methods" class="form-label">Control Methods</label>
+                                <label for="control_methods" class="form-label font-weight-bold text-success">Control Methods</label>
                                 <textarea class="form-control" id="control_methods" name="control_methods" rows="2" required> </textarea>
                             </div>
                             <div class="mb-3">
-                                <label for="primary_image" class="form-label">Primary Image</label>
+                                <label for="primary_image" class="form-label font-weight-bold text-success">Primary Image</label>
                                 <input type="file" accept="image/*" class="form-control" id="primary_image" name="primary_image" onChange="previewImg(event)" data-preview="primary-image-preview" required>
                                 <div class="row" id="primary-image-preview"></div>
                             </div>
                             <div class="mb-3">
-                                <label for="more_image" class="form-label">More Image (Not Necessary)</label>
+                                <label for="more_image" class="form-label font-weight-bold text-success">More Image (Not Necessary)</label>
                                 <input type="file" accept="image/*" class="form-control" id="more_image" name="more_image" onChange="previewImg(event)" data-preview="more-image-preview" multiple>
                                 <div class="row" id="more-image-preview"></div>
                             </div>
-                            <div class="text-center">
-                                <button type="submit" class="btn btn-success btn-block">Add</button>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Close</button>
+                                <button type="submit" class="btn btn-success">Add</button>
                             </div>
                         </form>
                     </div>
@@ -83,7 +84,7 @@
         {% for weed in weed_guide %}
         <div class="col-md-3 col-sm-6 mb-5">
             <div class="card" data-bs-toggle="modal" data-bs-target="#viewWeedModal{{ loop.index }}">
-                <img src="/static/images/db/{{weed[7]}}" class="img-fluid rounded border shadow-sm" alt="Image showcasing weed">
+                <img src="/static/images/db/{{weed[7][0]}}" class="img-fluid rounded border shadow-sm" alt="Image showcasing weed">
                 <div class="card-body">
                     <div class="row">
                         <div class="col-8">
@@ -93,7 +94,7 @@
                         {% if userType == 'Admin' or userType == 'Staff' %}
                         <div class="col-4 manage-buttons mt-3">
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                <button type="button" class="btn btn-link btn-sm">
+                                <button type="button" class="btn btn-link btn-sm" data-bs-toggle="modal" data-bs-target="#updateWeedModal{{ loop.index }}">
                                     <i class="fa-regular fa-pen-to-square" style="font-size: 1.3rem;"></i>
                                 </button>
                                 <button type="button" class="btn btn-link btn-sm" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal{{ loop.index }}">
@@ -117,7 +118,7 @@
                             <div class="modal-body">
                                 <div class="row align-items-start">
                                     <div class="col-md-8 d-flex justify-content-center align-items-center">
-                                        <img src="/static/images/db/{{weed[7]}}" class="img-fluid rounded border shadow-sm"
+                                        <img src="/static/images/db/{{weed[7][0]}}" class="img-fluid rounded border shadow-sm"
                                             alt="Image showcasing weed"
                                             style="min-width: 200px; width: 100%; height: auto;">
                                     </div>
@@ -142,12 +143,12 @@
                                         </dl>
                                     </div>
                                 </div>
-                                {% if weed[8]|length > 0 %}
+                                {% if weed[7]|length > 1 %}
                                 <div class="row">
                                     <div class="col-12 mt-3 font-weight-bold text-success text-center">
                                         <h5>More Images</h5>
                                     </div>
-                                    {% for image in weed[8] %}
+                                    {% for image in weed[7][1:] %}
                                     <div class="col-3 my-2">
                                         <img src="/static/images/db/{{ image }}" class="img-fluid rounded border shadow-sm" alt="Image showcasing weed">
                                     </div>
@@ -155,6 +156,72 @@
                                 </div>
                                 {% endif %}
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Update Weed Modal -->
+            <div class="modal fade" id="updateWeedModal{{ loop.index }}" tabindex="-1" aria-labelledby="updateWeedModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-xl">
+                    <div class="modal-content card">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Update weed {{weed[1]}}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="POST" action="{{ url_for('update_weed', weed_id=weed[0]) }}" enctype="multipart/form-data">
+                                <div class="row justify-content-around">
+                                    <div class="mb-3 col-5">
+                                        <label for="common_name" class="form-label font-weight-bold text-success">Common Name</label>
+                                        <input type="text" class="form-control" id="common_name" name="common_name" value="{{weed[1]}}" required>
+                                    </div>
+                                    <div class="mb-3 col-5">
+                                        <label for="scientific_name" class="form-label font-weight-bold text-success">Scientific Name</label>
+                                        <input type="text" class="form-control" id="scientific_name" name="scientific_name" value="{{weed[2]}}" required>
+                                    </div>
+                                    <div class="mb-3 col-2">
+                                        <label for="weed_type" class="form-label font-weight-bold text-success">Weed Type</label>
+                                        <input type="text" class="form-control" id="weed_type" name="weed_type" value="{{weed[3]}}" required>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="description" class="form-label font-weight-bold text-success">Description</label>
+                                    <textarea class="form-control" id="description" name="description" rows="2" required>{{weed[4]}}</textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="impacts" class="form-label font-weight-bold text-success">Impacts</label>
+                                    <textarea class="form-control" id="impacts" name="impacts" rows="2" required>{{weed[5]}}</textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="control_methods" class="form-label font-weight-bold text-success">Control Methods</label>
+                                    <textarea class="form-control" id="control_methods" name="control_methods" rows="2" required>{{weed[6]}}</textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="set_primary_image" class="form-label font-weight-bold text-success">Set Primary Image</label>
+                                    <div class="row align-items-end">
+                                        {% for image in weed[7] %}
+                                        <div class="col-3 my-2">
+                                            <img src="/static/images/db/{{ image }}" class="img-fluid rounded border shadow-sm" alt="Image showcasing weed" onclick="document.getElementById('set_primary_image{{ loop.index }}').checked=true; console.log('set_primary_image{{ loop.index }}')">
+                                            <div class="d-flex justify-content-center">
+                                                <div class="form-check text-center">
+                                                    <input class="form-check-input" type="radio" name="set_primary_image" id="set_primary_image{{ loop.index }}" value={{image}} {% if loop.first %}checked{% endif %}>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="more_image" class="form-label">More Image (Not Necessary)</label>
+                                    <input type="file" accept="image/*" class="form-control" id="update_more_image" name="update_more_image" onChange="previewImg(event)" data-preview="update-more-image-preview{{ loop.index }}" multiple>
+                                    <div class="row" id="update-more-image-preview{{ loop.index }}"></div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Close</button>
+                                    <button type="submit" class="btn btn-success">Update</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
