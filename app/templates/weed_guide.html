@@ -10,7 +10,6 @@
 {% endblock %}
 
 {% block content %}
-{{ weed_data}}
 <div class="container mt-5 bg-light rounded">
     <!-- Heading section -->
     <div class="text-center py-3 pt-5">
@@ -82,173 +81,178 @@
 
     <div class="row">
         {% for weed in weed_guide %}
-        <div class="col-md-3 col-sm-6 mb-5">
-            <div class="card" data-bs-toggle="modal" data-bs-target="#viewWeedModal{{ loop.index }}">
-                <img src="/static/images/db/{{weed[7][0]}}" class="img-fluid rounded border shadow-sm" alt="Image showcasing weed">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-8">
-                            <h5 class="card-title"><ins>{{weed[1]}}</ins></h5>
-                            <p class="card-text"> {{weed[3]}}</p>
+            {% set outer_index = loop.index %}
+            <div class="col-md-3 col-sm-6 mb-5">
+                <div class="card" data-bs-toggle="modal" data-bs-target="#viewWeedModal{{ outer_index }}">
+                    <img src="/static/images/db/{{weed[7][0]}}" class="img-fluid rounded border shadow-sm" alt="Image showcasing weed">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-8">
+                                <h5 class="card-title"><ins>{{weed[1]}}</ins></h5>
+                                <p class="card-text"> {{weed[3]}}</p>
+                            </div>
+                            {% if userType == 'Admin' or userType == 'Staff' %}
+                                <div class="col-4 manage-buttons mt-3">
+                                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                        <button type="button" class="btn btn-link btn-sm" data-bs-toggle="modal" data-bs-target="#updateWeedModal{{ outer_index }}">
+                                            <i class="fa-regular fa-pen-to-square" style="font-size: 1.3rem;"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-link btn-sm" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal{{ outer_index }}">
+                                            <i class="fa-regular fa-trash-can" style="font-size: 1.3rem;"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            {% endif %}
                         </div>
-                        {% if userType == 'Admin' or userType == 'Staff' %}
-                        <div class="col-4 manage-buttons mt-3">
-                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                <button type="button" class="btn btn-link btn-sm" data-bs-toggle="modal" data-bs-target="#updateWeedModal{{ loop.index }}">
-                                    <i class="fa-regular fa-pen-to-square" style="font-size: 1.3rem;"></i>
-                                </button>
-                                <button type="button" class="btn btn-link btn-sm" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal{{ loop.index }}">
-                                    <i class="fa-regular fa-trash-can" style="font-size: 1.3rem;"></i>
-                                </button>
+                    </div>
+
+                    <!-- View Weed Modal -->
+                    <div class="modal fade" id="viewWeedModal{{ outer_index }}" tabindex="-1" aria-labelledby="viewWeedModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-xl">
+                            <div class="modal-content card">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">{{weed[1]}}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row align-items-start">
+                                        <div class="col-md-8 d-flex justify-content-center align-items-center">
+                                            <img src="/static/images/db/{{weed[7][0]}}" class="img-fluid rounded border shadow-sm"
+                                                alt="Image showcasing weed"
+                                                style="min-width: 200px; width: 100%; height: auto;">
+                                        </div>
+                                        <div class="col-md-4 d-flex flex-column justify-content-between">
+                                            <dl class="row">
+                                                <div class="col-sm-12 col-md-12">
+                                                    <dt class="col-sm-4 font-weight-bold text-success">Scientific Name</dt>
+                                                    <dd class="col-sm-8">{{ weed[2] }}</dd>
+                                                </div>
+                                                <div class="col-sm-12 col-md-12">
+                                                    <dt class="col-sm-4 font-weight-bold text-success">Description</dt>
+                                                    <dd class="col-sm-8">{{ weed[4] }}</dd>
+                                                </div>
+                                                <div class="col-sm-12 col-md-12">
+                                                    <dt class="col-sm-4 font-weight-bold text-success">Impacts</dt>
+                                                    <dd class="col-sm-8">{{ weed[5] }}</dd>
+                                                </div>
+                                                <div class="col-sm-12 col-md-12">
+                                                    <dt class="col-sm-4 font-weight-bold text-success">Control Methods</dt>
+                                                    <dd class="col-sm-8">{{ weed[6] }}</dd>
+                                                </div>
+                                            </dl>
+                                        </div>
+                                    </div>
+                                    {% if weed[7]|length > 1 %}
+                                        <div class="row">
+                                            <div class="col-12 mt-3 font-weight-bold text-success text-center">
+                                                <h5>More Images</h5>
+                                            </div>
+                                            {% for image in weed[7][1:] %}
+                                                <div class="col-3 my-2">
+                                                    <img src="/static/images/db/{{ image }}" class="img-fluid rounded border shadow-sm" alt="Image showcasing weed">
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
-                        {% endif %}
                     </div>
                 </div>
 
-                <!-- View Weed Modal -->
-                <div class="modal fade" id="viewWeedModal{{ loop.index }}" tabindex="-1" aria-labelledby="viewWeedModalLabel"
-                    aria-hidden="true">
+                <!-- Update Weed Modal -->
+                <div class="modal fade" id="updateWeedModal{{ outer_index }}" tabindex="-1" aria-labelledby="updateWeedModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered modal-xl">
                         <div class="modal-content card">
                             <div class="modal-header">
-                                <h5 class="modal-title">{{weed[1]}}</h5>
+                                <h5 class="modal-title">Update weed {{weed[1]}}</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <div class="row align-items-start">
-                                    <div class="col-md-8 d-flex justify-content-center align-items-center">
-                                        <img src="/static/images/db/{{weed[7][0]}}" class="img-fluid rounded border shadow-sm"
-                                            alt="Image showcasing weed"
-                                            style="min-width: 200px; width: 100%; height: auto;">
+                                <form method="POST" action="{{ url_for('update_weed', weed_id=weed[0]) }}" enctype="multipart/form-data">
+                                    <div class="row justify-content-around">
+                                        <div class="mb-3 col-5">
+                                            <label for="common_name" class="form-label font-weight-bold text-success">Common Name</label>
+                                            <input type="text" class="form-control" id="common_name" name="common_name" value="{{weed[1]}}" required>
+                                        </div>
+                                        <div class="mb-3 col-5">
+                                            <label for="scientific_name" class="form-label font-weight-bold text-success">Scientific Name</label>
+                                            <input type="text" class="form-control" id="scientific_name" name="scientific_name" value="{{weed[2]}}" required>
+                                        </div>
+                                        <div class="mb-3 col-2">
+                                            <label for="weed_type" class="form-label font-weight-bold text-success">Weed Type</label>
+                                            <input type="text" class="form-control" id="weed_type" name="weed_type" value="{{weed[3]}}" required>
+                                        </div>
                                     </div>
-                                    <div class="col-md-4 d-flex flex-column justify-content-between">
-                                        <dl class="row">
-                                            <div class="col-sm-12 col-md-12">
-                                                <dt class="col-sm-4 font-weight-bold text-success">Scientific Name</dt>
-                                                <dd class="col-sm-8">{{ weed[2] }}</dd>
-                                            </div>
-                                            <div class="col-sm-12 col-md-12">
-                                                <dt class="col-sm-4 font-weight-bold text-success">Description</dt>
-                                                <dd class="col-sm-8">{{ weed[4] }}</dd>
-                                            </div>
-                                            <div class="col-sm-12 col-md-12">
-                                                <dt class="col-sm-4 font-weight-bold text-success">Impacts</dt>
-                                                <dd class="col-sm-8">{{ weed[5] }}</dd>
-                                            </div>
-                                            <div class="col-sm-12 col-md-12">
-                                                <dt class="col-sm-4 font-weight-bold text-success">Control Methods</dt>
-                                                <dd class="col-sm-8">{{ weed[6] }}</dd>
-                                            </div>
-                                        </dl>
+                                    <div class="mb-3">
+                                        <label for="description" class="form-label font-weight-bold text-success">Description</label>
+                                        <textarea class="form-control" id="description" name="description" rows="2" required>{{weed[4]}}</textarea>
                                     </div>
-                                </div>
-                                {% if weed[7]|length > 1 %}
-                                <div class="row">
-                                    <div class="col-12 mt-3 font-weight-bold text-success text-center">
-                                        <h5>More Images</h5>
+                                    <div class="mb-3">
+                                        <label for="impacts" class="form-label font-weight-bold text-success">Impacts</label>
+                                        <textarea class="form-control" id="impacts" name="impacts" rows="2" required>{{weed[5]}}</textarea>
                                     </div>
-                                    {% for image in weed[7][1:] %}
-                                    <div class="col-3 my-2">
-                                        <img src="/static/images/db/{{ image }}" class="img-fluid rounded border shadow-sm" alt="Image showcasing weed">
+                                    <div class="mb-3">
+                                        <label for="control_methods" class="form-label font-weight-bold text-success">Control Methods</label>
+                                        <textarea class="form-control" id="control_methods" name="control_methods" rows="2" required>{{weed[6]}}</textarea>
                                     </div>
-                                    {% endfor %}
-                                </div>
-                                {% endif %}
+                                    <div class="mb-3">
+                                        <label for="set_primary_image" class="form-label font-weight-bold text-success">Set Primary Image & Deltet more images</label>
+                                        <div class="row align-items-end">
+                                            {% for image in weed[7] %}
+                                                <div class="col-3 my-2 position-relative" id="imgDiv{{ outer_index }}_{{ loop.index }}">
+                                                    <img src="/static/images/db/{{ image }}" class="img-fluid rounded border shadow-sm" alt="Image showcasing weed" onclick="document.getElementById('set_primary_image{{ outer_index }}_{{ loop.index }}').checked=true;">
+                                                    <div class="d-flex justify-content-center">
+                                                        <div class="form-check text-center">
+                                                            <input class="form-check-input" type="radio" name="set_primary_image" id="set_primary_image{{ outer_index }}_{{ loop.index }}" value={{image}} {% if loop.first %}checked{% endif %}>
+                                                        </div>
+                                                    </div>
+                                                    {% if not loop.first %}
+                                                        <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0" onclick="markForDeletion('{{ image }}', '{{outer_index}}', '{{ loop.index }}')">X</button>
+                                                    {% endif %}
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                        <input type="hidden" id="images_to_delete{{outer_index}}" name="images_to_delete" value="">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="more_image" class="form-label">More Image (Not Necessary)</label>
+                                        <input type="file" accept="image/*" class="form-control" id="update_more_image" name="update_more_image" onChange="previewImg(event)" data-preview="update-more-image-preview{{ outer_index }}" multiple>
+                                        <div class="row" id="update-more-image-preview{{ outer_index}}"></div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Close</button>
+                                        <button type="submit" class="btn btn-success">Update</button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Update Weed Modal -->
-            <div class="modal fade" id="updateWeedModal{{ loop.index }}" tabindex="-1" aria-labelledby="updateWeedModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-xl">
-                    <div class="modal-content card">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Update weed {{weed[1]}}</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form method="POST" action="{{ url_for('update_weed', weed_id=weed[0]) }}" enctype="multipart/form-data">
-                                <div class="row justify-content-around">
-                                    <div class="mb-3 col-5">
-                                        <label for="common_name" class="form-label font-weight-bold text-success">Common Name</label>
-                                        <input type="text" class="form-control" id="common_name" name="common_name" value="{{weed[1]}}" required>
-                                    </div>
-                                    <div class="mb-3 col-5">
-                                        <label for="scientific_name" class="form-label font-weight-bold text-success">Scientific Name</label>
-                                        <input type="text" class="form-control" id="scientific_name" name="scientific_name" value="{{weed[2]}}" required>
-                                    </div>
-                                    <div class="mb-3 col-2">
-                                        <label for="weed_type" class="form-label font-weight-bold text-success">Weed Type</label>
-                                        <input type="text" class="form-control" id="weed_type" name="weed_type" value="{{weed[3]}}" required>
-                                    </div>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="description" class="form-label font-weight-bold text-success">Description</label>
-                                    <textarea class="form-control" id="description" name="description" rows="2" required>{{weed[4]}}</textarea>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="impacts" class="form-label font-weight-bold text-success">Impacts</label>
-                                    <textarea class="form-control" id="impacts" name="impacts" rows="2" required>{{weed[5]}}</textarea>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="control_methods" class="form-label font-weight-bold text-success">Control Methods</label>
-                                    <textarea class="form-control" id="control_methods" name="control_methods" rows="2" required>{{weed[6]}}</textarea>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="set_primary_image" class="form-label font-weight-bold text-success">Set Primary Image</label>
-                                    <div class="row align-items-end">
-                                        {% for image in weed[7] %}
-                                        <div class="col-3 my-2">
-                                            <img src="/static/images/db/{{ image }}" class="img-fluid rounded border shadow-sm" alt="Image showcasing weed" onclick="document.getElementById('set_primary_image{{ loop.index }}').checked=true; console.log('set_primary_image{{ loop.index }}')">
-                                            <div class="d-flex justify-content-center">
-                                                <div class="form-check text-center">
-                                                    <input class="form-check-input" type="radio" name="set_primary_image" id="set_primary_image{{ loop.index }}" value={{image}} {% if loop.first %}checked{% endif %}>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        {% endfor %}
-                                    </div>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="more_image" class="form-label">More Image (Not Necessary)</label>
-                                    <input type="file" accept="image/*" class="form-control" id="update_more_image" name="update_more_image" onChange="previewImg(event)" data-preview="update-more-image-preview{{ loop.index }}" multiple>
-                                    <div class="row" id="update-more-image-preview{{ loop.index }}"></div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Close</button>
-                                    <button type="submit" class="btn btn-success">Update</button>
-                                </div>
-                            </form>
+                <!-- Delete Confitmation Modal -->
+                <div class="modal fade" id="deleteConfirmModal{{ outer_index }}" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-xl">
+                        <div class="modal-content card">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Confirm delete {{weed[1]}}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                Are you sure you want to delete {{weed[1]}}?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Close</button>
+                                <form method="POST" action="{{ url_for('delete_weed', weed_id=weed[0]) }}">
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Delete Confitmation Modal -->
-            <div class="modal fade" id="deleteConfirmModal{{ loop.index }}" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-xl">
-                    <div class="modal-content card">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Confirm delete {{weed[1]}}</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            Are you sure you want to delete {{weed[1]}}?
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Close</button>
-                            <form method="POST" action="{{ url_for('delete_weed', weed_id=weed[0]) }}">
-                                <button type="submit" class="btn btn-danger">Delete</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
             </div>
-
-        </div>
         {% endfor %}
     </div>
 </div>
