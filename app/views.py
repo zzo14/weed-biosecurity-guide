@@ -278,7 +278,7 @@ def add_new_weed():
         description = request.form.get('description')
         impacts = request.form.get('impacts')
         control_methods = request.form.get('control_methods')
-        primary_image = request.files.getlist('primary_image')
+        primary_image = request.files.get('primary_image')
         more_images = request.files.getlist('more_image')
 
         
