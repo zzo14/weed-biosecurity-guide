@@ -45,3 +45,37 @@ function previewImg(event) {
         reader.readAsDataURL(files[i]);
     }
 };
+
+document.addEventListener("DOMContentLoaded", function() {
+    var addModal = document.getElementById('addWeedModal')
+
+    addModal.addEventListener('hidden.bs.modal', function() {
+        var form = addModal.querySelector('form');
+        form.reset();
+
+        var primaryImgPreview = addModal.querySelector('[id^=primary-image-preview]')
+        var moreImgPreview = addModal.querySelector('[id^=more-image-preview]')
+        if (primaryImgPreview) {
+            primaryImgPreview.innerHTML = '';
+        }
+        if (moreImgPreview) {
+            moreImgPreview.innerHTML = '';
+        }
+    });
+});
+
+document.addEventListener("DOMContentLoaded", function() {
+    var updateModal = document.querySelectorAll('[id^=updateWeedModal]')
+
+    updateModal.forEach(function(modal) {
+        modal.addEventListener('hidden.bs.modal', function() {
+            var form = modal.querySelector('form');
+            form.reset();
+
+            var moreImgPreview = modal.querySelector('[id^=update-more-image-preview]')
+            if (moreImgPreview) {
+                moreImgPreview.innerHTML = '';
+            }
+        });
+    });
+});
