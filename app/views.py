@@ -95,19 +95,23 @@ def register():
             return redirect(url_for('register'))
 
         hashed_password = generate_password_hash(password) 
-        query = "INSERT INTO userAuth (username, password_hash, userType) VALUES (%s, %s, %s)"
-        connection.execute(query, (username, hashed_password, 'Gardener'))
-        new_id = connection.lastrowid
-        affected_rows = connection.rowcount
-        if new_id and affected_rows > 0:
-            query = "INSERT INTO gardener (gardener_id, username, first_name, last_name, address, email, phone_number, date_joined, status) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
-            connection.execute(query, (new_id, username, first_name, last_name, address, email, phone_number, datetime.now(), 'Active'))
+
+        try:
+            query = "INSERT INTO userAuth (username, password_hash, userType) VALUES (%s, %s, %s)"
+            connection.execute(query, (username, hashed_password, 'Gardener'))
+            new_id = connection.lastrowid
             affected_rows = connection.rowcount
-            if affected_rows > 0:
-                flash("Successfully register! ", "success")
-                return redirect(url_for('login'))
-        else:
-            flash("Username already exists, please try another one.", "danger")
+            if new_id and affected_rows > 0:
+                query = "INSERT INTO gardener (gardener_id, username, first_name, last_name, address, email, phone_number, date_joined, status) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+                connection.execute(query, (new_id, username, first_name, last_name, address, email, phone_number, datetime.now(), 'Active'))
+                affected_rows = connection.rowcount
+                if affected_rows > 0:
+                    flash("Successfully register! ", "success")
+                    return redirect(url_for('login'))
+            else:
+                flash("Username already exists, please try another one.", "danger")
+        except Exception as e:
+            flash(f"Error: {e}. Register failed. Please try again.", "danger")
     return render_template("accounts/register.html")
 
 @app.route('/logout')
@@ -147,15 +151,18 @@ def update_gardener_profile():
         if not (first_name and last_name and address and email and phone_number):
             flash("Please fill out the form!", "danger")
             return redirect(url_for('gardener_profile'))
-
-        query = "UPDATE gardener SET first_name=%s, last_name=%s, address=%s, email=%s, phone_number=%s WHERE gardener_id = %s "
-        connection.execute(query, (first_name, last_name, address, email, phone_number, id))
-        affected_rows = connection.rowcount
-        if affected_rows > 0:
-            flash("Successfully update! ", "success")
-            return redirect(url_for('gardener_profile'))
-        else:
-            flash("Update failed. Please try again.", "danger")
+        
+        try: 
+            query = "UPDATE gardener SET first_name=%s, last_name=%s, address=%s, email=%s, phone_number=%s WHERE gardener_id = %s "
+            connection.execute(query, (first_name, last_name, address, email, phone_number, id))
+            affected_rows = connection.rowcount
+            if affected_rows > 0:
+                flash("Successfully update! ", "success")
+                return redirect(url_for('gardener_profile'))
+            else:
+                flash("Update failed. Please try again.", "danger")
+        except Exception as e:
+            flash(f"Error: {e}. Update failed. Please try again.", "danger")
     return redirect(url_for('gardener_profile'))
 
 @app.route('/staff_profile', methods=['GET', 'POST'])
@@ -191,18 +198,20 @@ def update_SA_profile():
         if not (first_name and last_name and work_phone and email and position and department):
             flash("Please fill out the form!", "danger")
             return redirect(profile_url)
-        
-        if usertype == 'Admin':
-            query = "UPDATE administration SET first_name=%s, last_name=%s, email=%s, work_phone=%s, position=%s, department=%s WHERE admin_id = %s "
-        else:
-            query = "UPDATE staff SET first_name=%s, last_name=%s, email=%s, work_phone=%s, position=%s, department=%s WHERE staff_id = %s "
-        connection.execute(query, (first_name, last_name, email, work_phone, position, department, id))
-        affected_rows = connection.rowcount
-        if affected_rows > 0:
-            flash("Successfully update! ", "success")
-            return redirect(profile_url)
-        else:
-            flash("Update failed. Please try again.", "danger")
+        try:
+            if usertype == 'Admin':
+                query = "UPDATE administration SET first_name=%s, last_name=%s, email=%s, work_phone=%s, position=%s, department=%s WHERE admin_id = %s "
+            else:
+                query = "UPDATE staff SET first_name=%s, last_name=%s, email=%s, work_phone=%s, position=%s, department=%s WHERE staff_id = %s "
+            connection.execute(query, (first_name, last_name, email, work_phone, position, department, id))
+            affected_rows = connection.rowcount
+            if affected_rows > 0:
+                flash("Successfully update! ", "success")
+                return redirect(profile_url)
+            else:
+                flash("Update failed. Please try again.", "danger")
+        except Exception as e:
+            flash(f"Error: {e}. Update failed. Please try again.", "danger")
     return redirect(profile_url)
 
 
@@ -232,14 +241,17 @@ def change_password():
             return redirect(url_for('change_password'))
         hashed_new_password = generate_password_hash(new_password)
 
-        query = "UPDATE userAuth SET password_hash=%s WHERE id=%s"
-        connection.execute(query, (hashed_new_password, id,))
-        affected_rows = connection.rowcount
-        if affected_rows > 0:
-            flash("Successfully change password! ", "success")
-            return redirect(url_for('change_password'))
-        else:
-            flash("Change password failed. Please try again.", "danger")
+        try:
+            query = "UPDATE userAuth SET password_hash=%s WHERE id=%s"
+            connection.execute(query, (hashed_new_password, id,))
+            affected_rows = connection.rowcount
+            if affected_rows > 0:
+                flash("Successfully change password! ", "success")
+                return redirect(url_for('change_password'))
+            else:
+                flash("Change password failed. Please try again.", "danger")
+        except Exception as e:
+            flash(f"Error: {e}. Change password failed. Please try again.", "danger")
     return render_template("change_password.html", username=session['username'], userType=session['userType'], profile_url=profile_url)
 
 
@@ -273,28 +285,30 @@ def add_new_weed():
         if not (common_name and scientific_name and weed_type and description and impacts and control_methods and primary_image):
             flash("Please fill out the form!", "danger")
             return redirect(url_for('weed_guide'))
-        
-        query = "INSERT INTO weedGuide (common_name, scientific_name, weed_type, description, impacts, control_methods) VALUES (%s, %s, %s, %s, %s, %s)"
-        connection.execute(query, (common_name, scientific_name, weed_type, description, impacts, control_methods))
-        new_id = connection.lastrowid
-        affected_rows = connection.rowcount
-
-        if new_id and affected_rows > 0:
-            query = "INSERT INTO weedImage (weed_id, image_name, is_primary) VALUES (%s, %s, %s)"
-            primary_filename = save_image(primary_image)
-            connection.execute(query, (new_id, primary_filename, 1))
-            try:
-                for image in more_images:
-                    filename = save_image(image)
-                    connection.execute(query, (new_id, filename, 0))
-            except:
-                pass
+        try:
+            query = "INSERT INTO weedGuide (common_name, scientific_name, weed_type, description, impacts, control_methods) VALUES (%s, %s, %s, %s, %s, %s)"
+            connection.execute(query, (common_name, scientific_name, weed_type, description, impacts, control_methods))
+            new_id = connection.lastrowid
             affected_rows = connection.rowcount
-            if affected_rows > 0:
-                flash("Successfully add a new weed! ", "success")
-                return redirect(url_for('weed_guide'))
-        else:
-            flash("Add failed. Please try again.", "danger")
+
+            if new_id and affected_rows > 0:
+                query = "INSERT INTO weedImage (weed_id, image_name, is_primary) VALUES (%s, %s, %s)"
+                primary_filename = save_image(primary_image)
+                connection.execute(query, (new_id, primary_filename, 1))
+                try:
+                    for image in more_images:
+                        filename = save_image(image)
+                        connection.execute(query, (new_id, filename, 0))
+                except:
+                    pass
+                affected_rows = connection.rowcount
+                if affected_rows > 0:
+                    flash("Successfully add a new weed! ", "success")
+                    return redirect(url_for('weed_guide'))
+            else:
+                flash("Add failed. Please try again.", "danger")
+        except Exception as e:
+            flash(f"Error: {e}.Add failed. Please try again.", "danger")
     return redirect(url_for('weed_guide'))
 
 @app.route('/weed_guide/update_weed/<int:weed_id>', methods=['GET', 'POST'])
@@ -343,8 +357,8 @@ def update_weed(weed_id):
                     connection.execute(query, (weed_id, image_name,))
 
             flash("Successfully update! ", "success")
-        except:
-            flash("Update failed. Please try again ", "danger")
+        except Exception as e:
+            flash(f"Error: {e}. Update failed. Please try again ", "danger")
     return redirect(url_for('weed_guide'))
 
 @app.route('/weed_guide/delete_weed/<int:weed_id>', methods=['GET', 'POST'])
@@ -364,19 +378,6 @@ def delete_weed(weed_id):
         else:
             flash("Delete failed. Please try again.", "danger")
     return redirect(url_for('weed_guide'))
-
-# @app.route('/weed_guide/delete_weed/<int:weed_id>/<image_name>', methods=['GET', 'POST'])
-# def delete_weed_image(weed_id, image_name):
-#     connection = getCursor()
-
-#     query = "DELETE FROM weedimage WHERE weed_id = %s AND image_name = %s"
-#     connection.execute(query, (weed_id, image_name,))
-#     affected_rows = connection.rowcount
-#     if affected_rows > 0:
-#         flash("Successfully delete the image!", "success")
-#     else:
-#         flash("Delete failed. Please try again.", "danger")
-#     return redirect(url_for('weed_guide'))
 
 def handle_weed_data(data, imgs):
     combined_data = []
