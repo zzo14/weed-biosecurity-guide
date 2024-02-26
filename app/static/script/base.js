@@ -79,3 +79,17 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 });
+
+function markForDeletion(imageName, parentIndex, index) {
+    var currentImage = document.getElementById('images_to_delete' + parentIndex);
+    if (currentImage.value) {
+        currentImage.value += ',' + imageName;
+    } else {
+        currentImage.value = imageName;
+    }
+    console.log(currentImage)
+    console.log(currentImage.value)
+
+    var imgDiv = document.getElementById('imgDiv' + parentIndex + '_' + index);
+    imgDiv.style.display = 'none';
+}
