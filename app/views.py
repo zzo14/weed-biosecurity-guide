@@ -301,6 +301,7 @@ def add_new_weed():
 def update_weed(weed_id):
     connection = getCursor()
     if request.method == 'POST':
+        print(request.form)
         common_name = request.form.get('common_name')
         scientific_name = request.form.get('scientific_name')
         weed_type = request.form.get('weed_type')
@@ -309,6 +310,8 @@ def update_weed(weed_id):
         control_methods = request.form.get('control_methods')
         primary_image = request.form.get('set_primary_image')
         more_images = request.files.getlist('update_more_image')
+        images_to_delete = request.form.get("images_to_delete")
+        print(images_to_delete)
             
         if not (common_name and scientific_name and weed_type and description and impacts and control_methods and primary_image):
             flash("Please fill out the form!", "danger")
@@ -332,6 +335,13 @@ def update_weed(weed_id):
                 
             query = "UPDATE weedguide SET common_name=%s, scientific_name=%s, weed_type=%s, description=%s, impacts=%s, control_methods=%s WHERE weed_id=%s"
             connection.execute(query, (common_name, scientific_name, weed_type, description, impacts, control_methods, weed_id))
+
+            if images_to_delete:
+                images_to_delete_list = images_to_delete.split(',')
+                query = "DELETE FROM weedimage WHERE weed_id = %s AND image_name = %s AND is_primary=0"
+                for image_name in images_to_delete_list:
+                    connection.execute(query, (weed_id, image_name,))
+
             flash("Successfully update! ", "success")
         except:
             flash("Update failed. Please try again ", "danger")
@@ -355,8 +365,18 @@ def delete_weed(weed_id):
             flash("Delete failed. Please try again.", "danger")
     return redirect(url_for('weed_guide'))
 
+# @app.route('/weed_guide/delete_weed/<int:weed_id>/<image_name>', methods=['GET', 'POST'])
+# def delete_weed_image(weed_id, image_name):
+#     connection = getCursor()
 
-
+#     query = "DELETE FROM weedimage WHERE weed_id = %s AND image_name = %s"
+#     connection.execute(query, (weed_id, image_name,))
+#     affected_rows = connection.rowcount
+#     if affected_rows > 0:
+#         flash("Successfully delete the image!", "success")
+#     else:
+#         flash("Delete failed. Please try again.", "danger")
+#     return redirect(url_for('weed_guide'))
 
 def handle_weed_data(data, imgs):
     combined_data = []
