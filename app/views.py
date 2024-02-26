@@ -266,9 +266,11 @@ def add_new_weed():
         description = request.form.get('description')
         impacts = request.form.get('impacts')
         control_methods = request.form.get('control_methods')
-        images = request.files.getlist('primary_image')
+        primary_image = request.files.getlist('primary_image')
+        more_images = request.files.getlist('more_image')
+
         
-        if not (common_name and scientific_name and weed_type and description and impacts and control_methods and images):
+        if not (common_name and scientific_name and weed_type and description and impacts and control_methods and primary_image):
             flash("Please fill out the form!", "danger")
             return redirect(url_for('weed_guide'))
         
@@ -279,10 +281,10 @@ def add_new_weed():
 
         if new_id and affected_rows > 0:
             query = "INSERT INTO weedImage (weed_id, image_name, is_primary) VALUES (%s, %s, %s)"
-            primary_filename = save_image(images[0])
+            primary_filename = save_image(primary_image)
             connection.execute(query, (new_id, primary_filename, 1))
             try:
-                for image in images[1:]:
+                for image in more_images:
                     filename = save_image(image)
                     connection.execute(query, (new_id, filename, 0))
             except:
@@ -293,6 +295,46 @@ def add_new_weed():
                 return redirect(url_for('weed_guide'))
         else:
             flash("Add failed. Please try again.", "danger")
+    return redirect(url_for('weed_guide'))
+
+@app.route('/weed_guide/update_weed/<int:weed_id>', methods=['GET', 'POST'])
+def update_weed(weed_id):
+    connection = getCursor()
+    if request.method == 'POST':
+        common_name = request.form.get('common_name')
+        scientific_name = request.form.get('scientific_name')
+        weed_type = request.form.get('weed_type')
+        description = request.form.get('description')
+        impacts = request.form.get('impacts')
+        control_methods = request.form.get('control_methods')
+        primary_image = request.form.get('set_primary_image')
+        more_images = request.files.getlist('update_more_image')
+            
+        if not (common_name and scientific_name and weed_type and description and impacts and control_methods and primary_image):
+            flash("Please fill out the form!", "danger")
+            return redirect(url_for('weed_guide'))
+        
+        try:
+            query = "UPDATE weedimage SET is_primary=0 WHERE weed_id=%s AND is_primary=1 AND image_name!=%s"
+            connection.execute(query, (weed_id, primary_image,))
+            affected_rows = connection.rowcount
+            if affected_rows > 0:
+                query = "UPDATE weedimage SET is_primary=1 WHERE weed_id=%s AND image_name=%s"
+                connection.execute(query, (weed_id, primary_image,))
+                
+            query = "INSERT INTO weedImage (weed_id, image_name, is_primary) VALUES (%s, %s, %s)"
+            try:
+                for image in more_images:
+                    filename = save_image(image)
+                    connection.execute(query, (weed_id, filename, 0))
+            except:
+                pass
+                
+            query = "UPDATE weedguide SET common_name=%s, scientific_name=%s, weed_type=%s, description=%s, impacts=%s, control_methods=%s WHERE weed_id=%s"
+            connection.execute(query, (common_name, scientific_name, weed_type, description, impacts, control_methods, weed_id))
+            flash("Successfully update! ", "success")
+        except:
+            flash("Update failed. Please try again ", "danger")
     return redirect(url_for('weed_guide'))
 
 @app.route('/weed_guide/delete_weed/<int:weed_id>', methods=['GET', 'POST'])
@@ -320,15 +362,17 @@ def handle_weed_data(data, imgs):
     combined_data = []
     for weed in data:
         weed_data = [item.decode('utf-8') if isinstance(item, bytes) else item for item in weed]
+        primary = []
         not_primary = []
         for img in imgs:
             if weed[0] == img[1]:
                 img_data = [item.decode('utf-8') if isinstance(item, bytes) else item for item in img]
                 if img[3] == 1:
-                    weed_data.append(img_data[2]), 
+                    primary.append(img_data[2]), 
                 else:
                     not_primary.append(img_data[2])
-        weed_data.append(not_primary)
+        img_data = primary + not_primary
+        weed_data.append(img_data)
         combined_data.append(weed_data)
     return combined_data
 
