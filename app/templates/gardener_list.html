@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Gardener List{% endblock %}
+
+{% block navbar %}
+{% include 'includes/navbar.html' %}
+{% endblock %}
+
+{% block header %}
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5 bg-light rounded">
+    <!-- Heading section -->
+    <div class="text-center py-3 pt-5">
+        <h2 class="display-4 text-success font-weight-bold">Gardener User List</h2>
+    </div>
+
+    <div class="row">
+        {% for gardeners in active_gardeners %}
+            {% set outer_index = loop.index %}
+            <div class="col-md-4 col-sm-6 mb-5">
+                <div class="card"> 
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-8">
+                                <h5 class="card-title">
+                                    <div>
+                                        <label class="form-label font-weight-bold text-success">Username: </label>
+                                        {{gardeners[1]}}
+                                    </div>
+                                </h5>
+                                <p class="card-text"> 
+                                    <div>
+                                        <label class="form-label font-weight-bold text-success">Name: </label>
+                                        {{gardeners[2]}} {{gardeners[3]}}
+                                    </div>
+                                    <div>
+                                        <label class="form-label font-weight-bold text-success">Address: </label>
+                                        {{gardeners[4]}}
+                                    </div>
+                                    <div>
+                                        <label class="form-label font-weight-bold text-success">Email: </label>
+                                        {{gardeners[5]}}
+                                    </div>
+                                    <div>
+                                        <label class="form-label font-weight-bold text-success">Phone: </label>
+                                        {{gardeners[6]}}
+                                    </div>
+                                    <div>
+                                        <label class="form-label font-weight-bold text-success">Joined Date: </label>
+                                        {{gardeners[7]}}
+                                    </div>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
