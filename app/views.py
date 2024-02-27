@@ -379,6 +379,17 @@ def delete_weed(weed_id):
             flash("Delete failed. Please try again.", "danger")
     return redirect(url_for('weed_guide'))
 
+@app.route('/gardener_list')
+def gardener_list():
+    profile_url = url_select()
+    connection = getCursor()
+    query = "SELECT * FROM gardener"
+    connection.execute(query)
+    gardeners_list = connection.fetchall()
+    active_gardeners, inactive_gardeners = handle_gardener_data(gardeners_list)
+    print(active_gardeners, inactive_gardeners)
+    return render_template("gardener_list.html", username=session['username'], userType=session['userType'], profile_url=profile_url, active_gardeners=active_gardeners, inactive_gardeners=inactive_gardeners)
+
 def handle_weed_data(data, imgs):
     combined_data = []
     for weed in data:
@@ -415,3 +426,13 @@ def url_select():
     else:
         profile_url=url_for('home')
     return profile_url
+
+def handle_gardener_data(gardener_list):
+    active_gardeners = []
+    inactive_gardeners = []
+    for gardener in gardener_list:
+        if gardener[8] == 'Active':
+            active_gardeners.append(gardener)
+        else:
+            inactive_gardeners.append(gardener)
+    return active_gardeners, inactive_gardeners
