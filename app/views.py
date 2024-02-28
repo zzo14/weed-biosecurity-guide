@@ -34,7 +34,7 @@ def getCursor():
     dbconn = connection.cursor()
     return dbconn
 
-#Interface
+#Home
 @app.route("/")
 def home():
     if 'loggedin' in session:
@@ -46,6 +46,7 @@ def home():
             return redirect(url_for('admin_profile'))
     return render_template("home.html")
 
+#Login, Register and Logout
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     connection = getCursor()
@@ -125,6 +126,7 @@ def logout():
    # Redirect to login page
    return redirect(url_for('home'))
 
+#User functions
 @app.route('/gardener_profile', methods=['GET', 'POST'])
 def gardener_profile():
     if 'loggedin' in session:
@@ -165,6 +167,8 @@ def update_gardener_profile():
             flash(f"Error: {e}. Update failed. Please try again.", "danger")
     return redirect(url_for('gardener_profile'))
 
+
+#Staff and admin functions
 @app.route('/staff_profile', methods=['GET', 'POST'])
 def staff_profile():
     if 'loggedin' in session:
@@ -214,7 +218,19 @@ def update_SA_profile():
             flash(f"Error: {e}. Update failed. Please try again.", "danger")
     return redirect(profile_url)
 
+@app.route('/gardener_list')
+def gardener_list():
+    profile_url = url_select()
+    connection = getCursor()
+    query = "SELECT * FROM gardener"
+    connection.execute(query)
+    gardeners_list = connection.fetchall()
+    active_gardeners, inactive_gardeners = handle_gardener_data(gardeners_list)
+    print(active_gardeners, inactive_gardeners)
+    return render_template("gardener_list.html", username=session['username'], userType=session['userType'], profile_url=profile_url, active_gardeners=active_gardeners, inactive_gardeners=inactive_gardeners)
 
+
+#Change password for all roles
 @app.route('/change_password', methods=['GET', 'POST'])
 def change_password():
     connection = getCursor()
@@ -254,7 +270,7 @@ def change_password():
             flash(f"Error: {e}. Change password failed. Please try again.", "danger")
     return render_template("change_password.html", username=session['username'], userType=session['userType'], profile_url=profile_url)
 
-
+# Weed guide functions
 @app.route('/weed_guide')
 def weed_guide():
     profile_url = url_select()
@@ -379,17 +395,7 @@ def delete_weed(weed_id):
             flash("Delete failed. Please try again.", "danger")
     return redirect(url_for('weed_guide'))
 
-@app.route('/gardener_list')
-def gardener_list():
-    profile_url = url_select()
-    connection = getCursor()
-    query = "SELECT * FROM gardener"
-    connection.execute(query)
-    gardeners_list = connection.fetchall()
-    active_gardeners, inactive_gardeners = handle_gardener_data(gardeners_list)
-    print(active_gardeners, inactive_gardeners)
-    return render_template("gardener_list.html", username=session['username'], userType=session['userType'], profile_url=profile_url, active_gardeners=active_gardeners, inactive_gardeners=inactive_gardeners)
-
+#Auxiliary functions
 def handle_weed_data(data, imgs):
     combined_data = []
     for weed in data:
@@ -413,7 +419,6 @@ def save_image(file):
     img_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     file.save(img_path)
     return filename
-
 
 def url_select():
     user_type = session['userType']
