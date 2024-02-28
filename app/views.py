@@ -204,7 +204,7 @@ def update_SA_profile():
             return redirect(profile_url)
         try:
             if usertype == 'Admin':
-                query = "UPDATE administration SET first_name=%s, last_name=%s, email=%s, work_phone=%s, position=%s, department=%s WHERE admin_id = %s "
+                query = "UPDATE administrator SET first_name=%s, last_name=%s, email=%s, work_phone=%s, position=%s, department=%s WHERE admin_id = %s "
             else:
                 query = "UPDATE staff SET first_name=%s, last_name=%s, email=%s, work_phone=%s, position=%s, department=%s WHERE staff_id = %s "
             connection.execute(query, (first_name, last_name, email, work_phone, position, department, id))
