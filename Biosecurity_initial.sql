@@ -3,74 +3,116 @@ CREATE SCHEMA biosercurity;
 USE biosercurity;
 
 /* ----- Create the tables: ----- */
-CREATE TABLE IF NOT EXISTS userAuth (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    username VARCHAR(50) UNIQUE NOT NULL,
-    password_hash VARCHAR(255) NOT NULL,
-    userType ENUM('Admin', 'Staff', 'Gardener') NOT NULL
-);
+CREATE TABLE IF NOT EXISTS `userauth` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `username` VARCHAR(50) NOT NULL,
+  `password_hash` VARCHAR(255) NOT NULL,
+  `userType` ENUM('Admin', 'Staff', 'Gardener') NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
+  UNIQUE INDEX `username_UNIQUE` (`username` ASC) VISIBLE);
 
-CREATE TABLE IF NOT EXISTS gardener (
-    gardener_id INT PRIMARY KEY,
-    username VARCHAR(50) NOT NULL,
-    first_name VARCHAR(50) NOT NULL,
-    last_name VARCHAR(50) NOT NULL,
-    address VARCHAR(100) NOT NULL,
-    email VARCHAR(50) NOT NULL,
-    phone_number VARCHAR(20) NOT NULL,
-    date_joined DATE NOT NULL,
-    status ENUM('Active', 'Inactive') NOT NULL,
-    FOREIGN KEY (gardener_id) REFERENCES userAuth(id)
-);
+CREATE TABLE IF NOT EXISTS `gardener` (
+  `gardener_id` INT NOT NULL,
+  `username` VARCHAR(50) NOT NULL,
+  `first_name` VARCHAR(50) NOT NULL,
+  `last_name` VARCHAR(50) NOT NULL,
+  `address` VARCHAR(100) NOT NULL,
+  `email` VARCHAR(50) NOT NULL,
+  `phone_number` VARCHAR(20) NOT NULL,
+  `date_joined` DATE NOT NULL,
+  `status` ENUM('Active', 'Inactive') NOT NULL,
+  PRIMARY KEY (`gardener_id`),
+  UNIQUE INDEX `gardener_id_UNIQUE` (`gardener_id` ASC) VISIBLE,
+  UNIQUE INDEX `username_UNIQUE` (`username` ASC) VISIBLE,
+  CONSTRAINT `fk_gardener_id`
+    FOREIGN KEY (`gardener_id`)
+    REFERENCES `biosercurity`.`userauth` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_gardener_username`
+    FOREIGN KEY (`username`)
+    REFERENCES `biosercurity`.`userauth` (`username`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE);
 
-CREATE TABLE IF NOT EXISTS staff (
-    staff_id INT PRIMARY KEY,
-    username VARCHAR(50) NOT NULL,
-    first_name VARCHAR(50) NOT NULL,
-    last_name VARCHAR(50) NOT NULL,
-    email VARCHAR(50) NOT NULL,
-    work_phone VARCHAR(20) NOT NULL,
-    hire_date DATE NOT NULL,
-    position VARCHAR(100) NOT NULL,
-    department VARCHAR(100) NOT NULL,
-    status ENUM('Active', 'Inactive') NOT NULL,
-    FOREIGN KEY (staff_id) REFERENCES userAuth(id)
-);
+CREATE TABLE IF NOT EXISTS `staff` (
+  `staff_id` INT NOT NULL,
+  `username` VARCHAR(50) NOT NULL,
+  `first_name` VARCHAR(50) NOT NULL,
+  `last_name` VARCHAR(50) NOT NULL,
+  `email` VARCHAR(50) NOT NULL,
+  `work_phone` VARCHAR(20) NOT NULL,
+  `hire_date` DATE NOT NULL,
+  `position` VARCHAR(100) NOT NULL,
+  `department` VARCHAR(100) NOT NULL,
+  `status` ENUM('Active', 'Inactive') NOT NULL,
+  PRIMARY KEY (`staff_id`),
+  UNIQUE INDEX `staff_id_UNIQUE` (`staff_id` ASC) VISIBLE,
+  UNIQUE INDEX `username_UNIQUE` (`username` ASC) VISIBLE,
+  CONSTRAINT `fk_staff_id`
+    FOREIGN KEY (`staff_id`)
+    REFERENCES `biosercurity`.`userauth` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_staff_username`
+    FOREIGN KEY (`username`)
+    REFERENCES `biosercurity`.`userauth` (`username`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE);
 
-CREATE TABLE IF NOT EXISTS administration (
-    admin_id INT PRIMARY KEY,
-    username VARCHAR(50) NOT NULL,
-    first_name VARCHAR(50) NOT NULL,
-    last_name VARCHAR(50) NOT NULL,
-    email VARCHAR(50) NOT NULL,
-    work_phone VARCHAR(20) NOT NULL,
-    hire_date DATE NOT NULL,
-    position VARCHAR(100) NOT NULL,
-    department VARCHAR(100) NOT NULL,
-    status ENUM('Active', 'Inactive') NOT NULL,
-    FOREIGN KEY (admin_id) REFERENCES userAuth(id)
-);
+CREATE TABLE IF NOT EXISTS `administrator` (
+  `admin_id` INT NOT NULL,
+  `username` VARCHAR(50) NOT NULL,
+  `first_name` VARCHAR(50) NOT NULL,
+  `last_name` VARCHAR(50) NOT NULL,
+  `email` VARCHAR(50) NOT NULL,
+  `work_phone` VARCHAR(20) NOT NULL,
+  `hire_date` DATE NOT NULL,
+  `position` VARCHAR(100) NOT NULL,
+  `department` VARCHAR(100) NOT NULL,
+  `status` ENUM('Active', 'Inactive') NOT NULL,
+  PRIMARY KEY (`admin_id`),
+  UNIQUE INDEX `username_UNIQUE` (`username` ASC) VISIBLE,
+  UNIQUE INDEX `admin_id_UNIQUE` (`admin_id` ASC) VISIBLE,
+  CONSTRAINT `fk_admin_id`
+    FOREIGN KEY (`admin_id`)
+    REFERENCES `biosercurity`.`userauth` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_admin_username`
+    FOREIGN KEY (`username`)
+    REFERENCES `biosercurity`.`userauth` (`username`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE);
 
-CREATE TABLE IF NOT EXISTS weedGuide (
-    weed_id INT PRIMARY KEY AUTO_INCREMENT,
-    common_name VARCHAR(50) NOT NULL,
-    scientific_name VARCHAR(50) NOT NULL,
-    weed_type VARCHAR(50) NOT NULL,
-    description TEXT,
-    impacts TEXT,
-    control_methods TEXT
-);
+CREATE TABLE IF NOT EXISTS `weedguide` (
+  `weed_id` INT NOT NULL AUTO_INCREMENT,
+  `common_name` VARCHAR(50) NOT NULL,
+  `scientific_name` VARCHAR(50) NOT NULL,
+  `weed_type` VARCHAR(50) NOT NULL,
+  `description` TEXT NOT NULL,
+  `impacts` TEXT NOT NULL,
+  `control_methods` TEXT NOT NULL,
+  PRIMARY KEY (`weed_id`),
+  UNIQUE INDEX `weed_id_UNIQUE` (`weed_id` ASC) VISIBLE);
 
-CREATE TABLE IF NOT EXISTS weedImage (
-    image_id INT PRIMARY KEY AUTO_INCREMENT,
-    weed_id INT NOT NULL,
-    image_name VARCHAR(100) NOT NULL,
-    is_primary BOOLEAN NOT NULL,
-    FOREIGN KEY (weed_id) REFERENCES weedGuide(weed_id)
-);
+CREATE TABLE IF NOT EXISTS `weedimage` (
+  `image_id` INT NOT NULL AUTO_INCREMENT,
+  `weed_id` INT NOT NULL,
+  `image_name` VARCHAR(100) NOT NULL,
+  `is_primary` TINYINT NOT NULL,
+  PRIMARY KEY (`image_id`),
+  UNIQUE INDEX `image_id_UNIQUE` (`image_id` ASC) VISIBLE,
+  INDEX `weed_id_idx` (`weed_id` ASC) VISIBLE,
+  CONSTRAINT `weed_id`
+    FOREIGN KEY (`weed_id`)
+    REFERENCES `biosercurity`.`weedguide` (`weed_id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE);
 
 /* ----- Insert data into the tables: ----- */
-INSERT INTO userAuth (username, password_hash, userType) VALUES
+INSERT INTO userauth (username, password_hash, userType) VALUES
     ('gardener1', 'scrypt:32768:8:1$3RY2MpKJfMBL6y2M$face964ccc797ac918e011d307e0d1b33c4d63ebce4a241d912edc0d498c47861f36ec03a6a39394376a930a982434b2edfa03283f4ea20f0b292c6514fce8e0', 'Gardener'),
     ('gardener2', 'scrypt:32768:8:1$3RY2MpKJfMBL6y2M$face964ccc797ac918e011d307e0d1b33c4d63ebce4a241d912edc0d498c47861f36ec03a6a39394376a930a982434b2edfa03283f4ea20f0b292c6514fce8e0', 'Gardener'),
     ('gardener3', 'scrypt:32768:8:1$3RY2MpKJfMBL6y2M$face964ccc797ac918e011d307e0d1b33c4d63ebce4a241d912edc0d498c47861f36ec03a6a39394376a930a982434b2edfa03283f4ea20f0b292c6514fce8e0', 'Gardener'),
@@ -93,10 +135,10 @@ INSERT INTO staff (staff_id, username, first_name, last_name, email, work_phone,
     (7, 'staff2', 'Bob', 'Green', 'bob.green@example.com', '0213456789', '2024-01-01', 'Technician', 'Maintenance', 'Active'),
     (8, 'staff3', 'Charlie', 'Blue', 'charlie.blue@example.com', '0214567890', '2024-01-01', 'Agent', 'Operations', 'Active');
 
-INSERT INTO administration (admin_id, username, first_name, last_name, email, work_phone, hire_date, position, department, status) VALUES
+INSERT INTO administrator (admin_id, username, first_name, last_name, email, work_phone, hire_date, position, department, status) VALUES
     (9, 'admin', 'Diana', 'White', 'diana.white@example.com', '0241234567', '2024-01-01', 'Manager', 'Administration', 'Active');
 
-INSERT INTO weedGuide (common_name, scientific_name, weed_type, description, impacts, control_methods) VALUES
+INSERT INTO weedguide (common_name, scientific_name, weed_type, description, impacts, control_methods) VALUES
     ('Annual Poa', 'Poa annua', 'Grass', 'A samll grass often unnoticed in turf.','Can die off leaving bare ground, making turf look patchy.', 'Fungicide spraying, herbicides like Ethofumesate and Pendimethalin.'),
     ('Black nightshade', 'Solanum nigrum', 'Summer annual', 'Grows tall and leafy, creating competition with crops', 'Toxic, especially unripe berries; hard to seperate berries from peas at harvest','Cultivation, herbicides; resistant to some sulfonylurea herbicides and trifluralin.'),
     ('Blackberry', 'Rubus fruticosus', 'Scrub weed', 'Troublesome in pastures and forests, with hooks on stems.', 'Can trap woolly sheep;  seeds dispersed by birds.', 'Grazing by goats, herbicides like metsulfuron, triclopyr, picloram, and glyphosate.'),
@@ -118,7 +160,7 @@ INSERT INTO weedGuide (common_name, scientific_name, weed_type, description, imp
     ('Turf Speedwell', 'Veronica serpyllifolia', 'Perennial', 'Turf speedwell is a small perennial weed with white flowers, common in turf and pastures.', 'Forms dense mats in turf, tolerant of many turf herbicides.', 'Best controlled with a mixture of mecoprop and ioxynil, may require re-treatment.'),
     ('Twin Cress', 'Lepidium didymum', 'Annual', 'Twin cress is a small weed that starts as a rosette and sends out prostrate stems, common in crops and gardens.', 'Can cause milk taint in dairy farms, forms mats on the ground.', 'Controlled by MCPB or MCPA in young pastures, flumetsulam before the 4-leaf stage, and various turf herbicides in lawns.');
 
-INSERT INTO weedImage (weed_id, image_name, is_primary) VALUES
+INSERT INTO weedimage (weed_id, image_name, is_primary) VALUES
     (1, 'annual_poa_N1_.width-400.format-webp.webp', TRUE),
     (2, 'nightshadeB1.width-400.format-webp.webp', TRUE),
     (3, 'blackberryB1.width-400.format-webp.webp', TRUE),
