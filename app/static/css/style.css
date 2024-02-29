@@ -250,3 +250,24 @@ dl dt {
     padding-right: 30px;
 }
 /* End - password input */
+
+/* inactive card */
+.inactive_card {
+    position:relative;
+    overflow: hidden;
+    background-color: #b5b4b4;
+}
+
+.card-footer {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: bottom 0.3s;
+    opacity: 0;
+}
+
+.inactive_card:hover .card-footer {
+    opacity: 1;
+}
+/* End - inactive card */
