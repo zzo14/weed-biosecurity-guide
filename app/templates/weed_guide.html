@@ -31,7 +31,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form method="POST" action="{{ url_for('add_new_weed') }}" enctype="multipart/form-data">
+                    <form method="POST" action="{{ url_for('weed.add_new_weed') }}" enctype="multipart/form-data">
                         <div class="row justify-content-around">
                             <div class="mb-3 col-5">
                                 <label for="common_name" class="form-label font-weight-bold text-success">Common Name</label>
@@ -171,7 +171,7 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <form method="POST" action="{{ url_for('update_weed', weed_id=weed[0]) }}" enctype="multipart/form-data">
+                                <form method="POST" action="{{ url_for('weed.update_weed', weed_id=weed[0]) }}" enctype="multipart/form-data">
                                     <div class="row justify-content-around">
                                         <div class="mb-3 col-5">
                                             <label for="common_name" class="form-label font-weight-bold text-success">Common Name</label>
@@ -245,7 +245,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Close</button>
-                                <form method="POST" action="{{ url_for('delete_weed', weed_id=weed[0]) }}">
+                                <form method="POST" action="{{ url_for('weed.delete_weed', weed_id=weed[0]) }}">
                                     <button type="submit" class="btn btn-danger">Delete</button>
                                 </form>
                             </div>
