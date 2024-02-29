@@ -18,61 +18,61 @@
     {% if userType == 'Admin' or userType == 'Staff' %}
     <div class="mt-2 mb-2 text-end">
         <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addWeedModal">
-            <i class="fa-solid fa-user-plus"></i>
+            <i class="fa-solid fa-seedling"></i>
             Add Weed
         </button>
+    </div>
 
-        <div class="modal fade" id="addWeedModal" tabindex="-1" aria-labelledby="addWeedModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-xl">
-                <div class="modal-content card">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Add a new weed</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form method="POST" action="{{ url_for('add_new_weed') }}" enctype="multipart/form-data">
-                            <div class="row justify-content-around">
-                                <div class="mb-3 col-5">
-                                    <label for="common_name" class="form-label font-weight-bold text-success">Common Name</label>
-                                    <input type="text" class="form-control" id="common_name" name="common_name" required>
-                                </div>
-                                <div class="mb-3 col-5">
-                                    <label for="scientific_name" class="form-label font-weight-bold text-success">Scientific Name</label>
-                                    <input type="text" class="form-control" id="scientific_name" name="scientific_name" required>
-                                </div>
-                                <div class="mb-3 col-2">
-                                    <label for="weed_type" class="form-label font-weight-bold text-success">Weed Type</label>
-                                    <input type="text" class="form-control" id="weed_type" name="weed_type" required>
-                                </div>
+    <div class="modal fade" id="addWeedModal" tabindex="-1" aria-labelledby="addWeedModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div class="modal-content card">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add a new weed</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="{{ url_for('add_new_weed') }}" enctype="multipart/form-data">
+                        <div class="row justify-content-around">
+                            <div class="mb-3 col-5">
+                                <label for="common_name" class="form-label font-weight-bold text-success">Common Name</label>
+                                <input type="text" class="form-control" id="common_name" name="common_name" required>
                             </div>
-                            <div class="mb-3">
-                                <label for="description" class="form-label font-weight-bold text-success">Description</label>
-                                <textarea class="form-control" id="description" name="description" rows="2" required> </textarea>
+                            <div class="mb-3 col-5">
+                                <label for="scientific_name" class="form-label font-weight-bold text-success">Scientific Name</label>
+                                <input type="text" class="form-control" id="scientific_name" name="scientific_name" required>
                             </div>
-                            <div class="mb-3">
-                                <label for="impacts" class="form-label font-weight-bold text-success">Impacts</label>
-                                <textarea class="form-control" id="impacts" name="impacts" rows="2" required> </textarea>
+                            <div class="mb-3 col-2">
+                                <label for="weed_type" class="form-label font-weight-bold text-success">Weed Type</label>
+                                <input type="text" class="form-control" id="weed_type" name="weed_type" required>
                             </div>
-                            <div class="mb-3">
-                                <label for="control_methods" class="form-label font-weight-bold text-success">Control Methods</label>
-                                <textarea class="form-control" id="control_methods" name="control_methods" rows="2" required> </textarea>
-                            </div>
-                            <div class="mb-3">
-                                <label for="primary_image" class="form-label font-weight-bold text-success">Primary Image</label>
-                                <input type="file" accept="image/*" class="form-control" id="primary_image" name="primary_image" onChange="previewImg(event)" data-preview="primary-image-preview" required>
-                                <div class="row" id="primary-image-preview"></div>
-                            </div>
-                            <div class="mb-3">
-                                <label for="more_image" class="form-label font-weight-bold text-success">More Image (Not Necessary)</label>
-                                <input type="file" accept="image/*" class="form-control" id="more_image" name="more_image" onChange="previewImg(event)" data-preview="more-image-preview" multiple>
-                                <div class="row" id="more-image-preview"></div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Close</button>
-                                <button type="submit" class="btn btn-success">Add</button>
-                            </div>
-                        </form>
-                    </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label font-weight-bold text-success">Description</label>
+                            <textarea class="form-control" id="description" name="description" rows="2" required> </textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="impacts" class="form-label font-weight-bold text-success">Impacts</label>
+                            <textarea class="form-control" id="impacts" name="impacts" rows="2" required> </textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="control_methods" class="form-label font-weight-bold text-success">Control Methods</label>
+                            <textarea class="form-control" id="control_methods" name="control_methods" rows="2" required> </textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="primary_image" class="form-label font-weight-bold text-success">Primary Image</label>
+                            <input type="file" accept="image/*" class="form-control" id="primary_image" name="primary_image" onChange="previewImg(event)" data-preview="primary-image-preview" required>
+                            <div class="row" id="primary-image-preview"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="more_image" class="form-label font-weight-bold text-success">More Image (Not Necessary)</label>
+                            <input type="file" accept="image/*" class="form-control" id="more_image" name="more_image" onChange="previewImg(event)" data-preview="more-image-preview" multiple>
+                            <div class="row" id="more-image-preview"></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Close</button>
+                            <button type="submit" class="btn btn-success">Add</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
