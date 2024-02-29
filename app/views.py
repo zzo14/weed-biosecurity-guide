@@ -17,7 +17,6 @@ import app.connect as connect
 from . import app
 import os
 
-
 app.secret_key = 'key'
 app.permanent_session_lifetime = timedelta(hours=24)
 dbconn = None
@@ -127,7 +126,7 @@ def logout():
    return redirect(url_for('home'))
 
 #User functions
-@app.route('/gardener_profile', methods=['GET', 'POST'])
+@app.route('/gardener_profile')
 def gardener_profile():
     if 'loggedin' in session:
         connection = getCursor()
@@ -169,7 +168,7 @@ def update_gardener_profile():
 
 
 #Staff and admin functions
-@app.route('/staff_profile', methods=['GET', 'POST'])
+@app.route('/staff_profile')
 def staff_profile():
     if 'loggedin' in session:
         if session['userType'] == 'Staff':
@@ -179,6 +178,22 @@ def staff_profile():
             connection.execute(query, (id,))
             staff = connection.fetchone()
             return render_template("staff_profile.html", username=session['username'], userType=session['userType'], profile_url=url_for('staff_profile'), staff=staff)
+        else:
+            flash("Illegal Access!", "danger")
+            return redirect(url_for('home'))
+    else:
+        return redirect(url_for('home'))
+
+@app.route('/admin_profile')
+def admin_profile():
+    if 'loggedin' in session:
+        if session['userType'] == 'Admin':
+            connection = getCursor()
+            id = session['id']
+            query = "SELECT * FROM administrator WHERE admin_id = %s"
+            connection.execute(query, (id,))
+            admin = connection.fetchone()
+            return render_template("admin_profile.html", username=session['username'], userType=session['userType'], profile_url=url_for('admin_profile'), admin=admin)
         else:
             flash("Illegal Access!", "danger")
             return redirect(url_for('home'))
@@ -220,15 +235,70 @@ def update_SA_profile():
 
 @app.route('/gardener_list')
 def gardener_list():
-    profile_url = url_select()
-    connection = getCursor()
-    query = "SELECT * FROM gardener"
-    connection.execute(query)
-    gardeners_list = connection.fetchall()
-    active_gardeners, inactive_gardeners = handle_gardener_data(gardeners_list)
-    print(active_gardeners, inactive_gardeners)
-    return render_template("gardener_list.html", username=session['username'], userType=session['userType'], profile_url=profile_url, active_gardeners=active_gardeners, inactive_gardeners=inactive_gardeners)
+    if 'loggedin' in session and (session['userType'] == 'Staff' or session['userType'] == 'Admin'):
+        profile_url = url_select()
+        connection = getCursor()
+        query = "SELECT * FROM gardener"
+        connection.execute(query)
+        gardeners_list = connection.fetchall()
+        active_gardeners, inactive_gardeners = handle_user_data(gardeners_list)
+        return render_template("gardener_list.html", username=session['username'], userType=session['userType'], profile_url=profile_url, active_gardeners=active_gardeners, inactive_gardeners=inactive_gardeners)
+    else:
+        flash("Illegal Access!", "danger")
+        return redirect(url_for('home'))
 
+@app.route('/gardener_list/add_new_gardener',  methods=['GET', 'POST'])
+def add_new_gardener():
+    connection = getCursor()
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        first_name = request.form.get('first_name')
+        last_name = request.form.get('last_name')
+        address = request.form.get('address')
+        email = request.form.get('email')
+        phone_number = request.form.get('phone_number')
+
+        if not (username and password and first_name and last_name and address and email and phone_number):
+            flash("Please fill out the form!", "danger")
+            return redirect(url_for('add_new_gardener'))
+
+        if not re.match(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{8,}$', password):
+            flash("Password must be at least 8 characters long and conatin uppercase, lowercase, number and special characters.")
+            return redirect(url_for('add_new_gardener'))
+
+        hashed_password = generate_password_hash(password) 
+
+        try:
+            query = "INSERT INTO userAuth (username, password_hash, userType) VALUES (%s, %s, %s)"
+            connection.execute(query, (username, hashed_password, 'Gardener'))
+            new_id = connection.lastrowid
+            affected_rows = connection.rowcount
+            if new_id and affected_rows > 0:
+                query = "INSERT INTO gardener (gardener_id, username, first_name, last_name, address, email, phone_number, date_joined, status) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+                connection.execute(query, (new_id, username, first_name, last_name, address, email, phone_number, datetime.now(), 'Active'))
+                affected_rows = connection.rowcount
+                if affected_rows > 0:
+                    flash("Successfully add a new gardener! ", "success")
+                    return redirect(url_for('gardener_list'))
+            else:
+                flash("Username already exists, please try another one.", "danger")
+        except Exception as e:
+            flash(f"Error: {e}. Add failed. Please try again.", "danger")
+    return redirect(url_for('add_new_gardener'))
+
+@app.route('/staff_list')
+def staff_list():
+    if 'loggedin' in session and session['userType'] == 'Admin':
+        connection = getCursor()
+        query = "SELECT * FROM staff"
+        connection.execute(query)
+        staff_list = connection.fetchall()
+        active_staffs, inactive_staffs = handle_user_data(staff_list)
+        return render_template("staff_list.html", username=session['username'], userType=session['userType'], profile_url=url_for('admin_profile'), active_staffs=active_staffs, inactive_staffs=inactive_staffs)
+    else:
+        flash("Illegal Access!", "danger")
+        return redirect(url_for('home'))
 
 #Change password for all roles
 @app.route('/change_password', methods=['GET', 'POST'])
@@ -371,7 +441,11 @@ def update_weed(weed_id):
                 query = "DELETE FROM weedimage WHERE weed_id = %s AND image_name = %s AND is_primary=0"
                 for image_name in images_to_delete_list:
                     connection.execute(query, (weed_id, image_name,))
-
+                    affected_rows = connection.rowcount
+                    if affected_rows > 0:
+                        img_path = os.path.join(app.config['UPLOAD_FOLDER'], image_name)
+                        if os.path.exists(img_path):
+                            os.remove(img_path)
             flash("Successfully update! ", "success")
         except Exception as e:
             flash(f"Error: {e}. Update failed. Please try again ", "danger")
@@ -381,16 +455,20 @@ def update_weed(weed_id):
 def delete_weed(weed_id):
     connection = getCursor()
     if request.method == 'POST':
-        query = "DELETE FROM weedimage WHERE weed_id = %s"
+        query = "SELECT image_name FROM weedimage WHERE weed_id = %s"
+        connection.execute(query, (weed_id,))
+        images = connection.fetchall()
+
+        query = "DELETE FROM weedguide WHERE weed_id = %s"
         connection.execute(query, (weed_id,))
         affected_rows = connection.rowcount
         if affected_rows > 0:
-            query = "DELETE FROM weedguide WHERE weed_id = %s"
-            connection.execute(query, (weed_id,))
-            affected_rows = connection.rowcount
-            if affected_rows > 0:
-                flash("Successfully delete the weed!", "success")
-                return redirect(url_for('weed_guide'))
+            for image in images:
+                img_path = os.path.join(app.config['UPLOAD_FOLDER'], image[0])
+                if os.path.exists(img_path):
+                    os.remove(img_path)
+            flash("Successfully delete the weed!", "success")
+            return redirect(url_for('weed_guide'))
         else:
             flash("Delete failed. Please try again.", "danger")
     return redirect(url_for('weed_guide'))
@@ -432,12 +510,12 @@ def url_select():
         profile_url=url_for('home')
     return profile_url
 
-def handle_gardener_data(gardener_list):
-    active_gardeners = []
-    inactive_gardeners = []
-    for gardener in gardener_list:
-        if gardener[8] == 'Active':
-            active_gardeners.append(gardener)
+def handle_user_data(role_list):
+    active_roles = []
+    inactive_roles = []
+    for user in role_list:
+        if user[-1] == 'Active':
+            active_roles.append(user)
         else:
-            inactive_gardeners.append(gardener)
-    return active_gardeners, inactive_gardeners
+            inactive_roles.append(user)
+    return active_roles, inactive_roles
