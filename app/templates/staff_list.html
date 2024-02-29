@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Gardener List{% endblock %}
+
+{% block navbar %}
+{% include 'includes/navbar.html' %}
+{% endblock %}
+
+{% block header %}
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5 bg-light rounded">
+    <!-- Heading section -->
+    <div class="text-center py-3 pt-5">
+        <h2 class="display-4 text-success font-weight-bold">Staff User List</h2>
+    </div>
+
+    <div class="row">
+        {% for staff in active_staffs %}
+            {% set outer_index = loop.index %}
+            <div class="col-md-4 col-sm-6 mb-5">
+                <div class="card"> 
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-8">
+                                <h5 class="card-title">
+                                    <div>
+                                        <label class="form-label font-weight-bold text-success">Username: </label>
+                                        {{staff[1]}}
+                                    </div>
+                                </h5>
+                                <p class="card-text"> 
+                                    <div>
+                                        <label class="form-label font-weight-bold text-success">Name: </label>
+                                        {{staff[2]}} {{staff[3]}}
+                                    </div>
+                                    <div>
+                                        <label class="form-label font-weight-bold text-success">Email: </label>
+                                        {{staff[4]}}
+                                    </div>
+                                    <div>
+                                        <label class="form-label font-weight-bold text-success">Work Phone: </label>
+                                        {{staff[5]}}
+                                    </div>
+                                    <div>
+                                        <label class="form-label font-weight-bold text-success">Position & Department: </label>
+                                        {{staff[7]}} at {{staff[8]}}
+                                    </div>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
