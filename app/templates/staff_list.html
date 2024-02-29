@@ -31,7 +31,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form method="POST" action="{{ url_for('add_new_staff') }}">
+                    <form method="POST" action="{{ url_for('admin_staff.add_new_staff') }}">
                         <div class="row justify-content-around">
                             <div class="mb-3 col-6">
                                 <label for="username" class="form-label font-weight-bold text-success text-start">Username</label>
@@ -146,7 +146,7 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <form method="POST" action="{{ url_for('update_SA_profile', staff_id=staff[0]) }}">
+                            <form method="POST" action="{{ url_for('admin_staff.update_SA_profile', staff_id=staff[0]) }}">
                                 <div class="row justify-content-around">
                                     <div class="mb-3 col-6">
                                         <label for="first_name" class="form-label font-weight-bold text-success">First Name</label>
@@ -201,7 +201,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Close</button>
-                            <form method="POST" action="{{ url_for('delete_staff', staff_id=staff[0]) }}">
+                            <form method="POST" action="{{ url_for('admin_staff.delete_staff', staff_id=staff[0]) }}">
                                 <button type="submit" class="btn btn-danger">Delete</button>
                             </form>
                         </div>
@@ -252,8 +252,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="card-footer">
-                                <form method="POST" action="{{ url_for('recover_staff_account', staff_id=staff[0]) }}">
+                            <div class="card-footer inactive_card_footer">
+                                <form method="POST" action="{{ url_for('admin_staff.recover_staff_account', staff_id=staff[0]) }}">
                                     <button type="submit" class="btn btn-primary restore-button">Recover Account</button>
                                 </form>
                             </div>
