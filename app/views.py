@@ -138,8 +138,9 @@ def gardener_profile():
     else:
         return redirect(url_for('home'))
 
-@app.route('/gardener_profile/update_gardener_profile', methods=['GET', 'POST'])
-def update_gardener_profile():
+@app.route('/gardener_profile/update_gardener_profile', defaults={'gardener_id': None}, methods=['GET', 'POST'])
+@app.route('/gardener_profile/update_gardener_profile/<int:gardener_id>', methods=['GET', 'POST'])
+def update_gardener_profile(gardener_id):
     connection = getCursor()
     id = session['id']
     if request.method == 'POST':
@@ -154,14 +155,25 @@ def update_gardener_profile():
             return redirect(url_for('gardener_profile'))
         
         try: 
-            query = "UPDATE gardener SET first_name=%s, last_name=%s, address=%s, email=%s, phone_number=%s WHERE gardener_id = %s "
-            connection.execute(query, (first_name, last_name, address, email, phone_number, id))
-            affected_rows = connection.rowcount
-            if affected_rows > 0:
-                flash("Successfully update! ", "success")
-                return redirect(url_for('gardener_profile'))
+            if gardener_id:
+                query = "UPDATE gardener SET first_name=%s, last_name=%s, address=%s, email=%s, phone_number=%s WHERE gardener_id = %s "
+                connection.execute(query, (first_name, last_name, address, email, phone_number, gardener_id))
+                affected_rows = connection.rowcount
+                if affected_rows > 0:
+                    flash("Successfully update! ", "success")
+                    return redirect(url_for('gardener_list'))
+                else:
+                    flash("Update failed. Please try again.", "danger")
+                    return redirect(url_for('gardener_list'))
             else:
-                flash("Update failed. Please try again.", "danger")
+                query = "UPDATE gardener SET first_name=%s, last_name=%s, address=%s, email=%s, phone_number=%s WHERE gardener_id = %s "
+                connection.execute(query, (first_name, last_name, address, email, phone_number, id))
+                affected_rows = connection.rowcount
+                if affected_rows > 0:
+                    flash("Successfully update! ", "success")
+                    return redirect(url_for('gardener_profile'))
+                else:
+                    flash("Update failed. Please try again.", "danger")
         except Exception as e:
             flash(f"Error: {e}. Update failed. Please try again.", "danger")
     return redirect(url_for('gardener_profile'))
@@ -241,8 +253,8 @@ def gardener_list():
         query = "SELECT * FROM gardener"
         connection.execute(query)
         gardeners_list = connection.fetchall()
-        active_gardeners, inactive_gardeners = handle_user_data(gardeners_list)
-        return render_template("gardener_list.html", username=session['username'], userType=session['userType'], profile_url=profile_url, active_gardeners=active_gardeners, inactive_gardeners=inactive_gardeners)
+        active_gardeners, inActive_gardeners = handle_user_data(gardeners_list)
+        return render_template("gardener_list.html", username=session['username'], userType=session['userType'], profile_url=profile_url, active_gardeners=active_gardeners, inActive_gardeners=inActive_gardeners)
     else:
         flash("Illegal Access!", "danger")
         return redirect(url_for('home'))
@@ -287,6 +299,20 @@ def add_new_gardener():
             flash(f"Error: {e}. Add failed. Please try again.", "danger")
     return redirect(url_for('add_new_gardener'))
 
+@app.route('/gardener_list/delete_gardener/<int:gardener_id>', methods=['GET', 'POST'])
+def delete_gardener(gardener_id):
+    connection = getCursor()
+    if request.method == 'POST':
+        query = "UPDATE gardener SET status='Inactive' WHERE gardener_id = %s"
+        connection.execute(query, (gardener_id,))
+        affected_rows = connection.rowcount
+        if affected_rows > 0:
+            flash("Successfully delete the gardener!", "success")
+            return redirect(url_for('gardener_list'))
+        else:
+            flash("Delete failed. Please try again.", "danger")
+    return redirect(url_for('gardener_list'))
+
 @app.route('/staff_list')
 def staff_list():
     if 'loggedin' in session and session['userType'] == 'Admin':
@@ -299,6 +325,23 @@ def staff_list():
     else:
         flash("Illegal Access!", "danger")
         return redirect(url_for('home'))
+
+
+@app.route('/gardener_list/recover_gardener_account/<int:gardener_id>',methods=['GET', 'POST'])
+def recover_gardener_account(gardener_id):
+    connection = getCursor()
+    if request.method == 'POST':
+        query = "UPDATE gardener SET status='Active' WHERE gardener_id = %s"
+        connection.execute(query, (gardener_id,))
+        affected_rows = connection.rowcount
+        if affected_rows > 0:
+            flash("Successfully recover the gardener!", "success")
+            return redirect(url_for('gardener_list'))
+        else:
+            flash("Recover failed. Please try again.", "danger")
+    return redirect(url_for('gardener_list'))
+
+
 
 #Change password for all roles
 @app.route('/change_password', methods=['GET', 'POST'])
