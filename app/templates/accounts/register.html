@@ -18,7 +18,7 @@
         <div class="card my-5">
             <div class="card-body">
                 <h3 class="card-title text-center">Register</h3>
-                <form method="post" action="{{url_for('register')}}">
+                <form method="post" action="{{url_for('auth.register')}}">
                     <div class="row justify-content-around">
                         <div class="form-group col-6">
                             <label for="username">Username</label>
@@ -63,7 +63,7 @@
                 </form>
             </div>
             <div class="card-footer text-center">
-                Already have an account? <a href="{{url_for('login')}}">Login Here</a> or <a href="{{ url_for('home') }}">Go back.</a>
+                Already have an account? <a href="{{url_for('auth.login')}}">Login Here</a> or <a href="{{ url_for('home.home') }}">Go back.</a>
             </div>
         </div>
     </div>
