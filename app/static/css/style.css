@@ -258,7 +258,7 @@ dl dt {
     background-color: #b5b4b4;
 }
 
-.card-footer {
+.inactive_card_footer {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -267,7 +267,7 @@ dl dt {
     opacity: 0;
 }
 
-.inactive_card:hover .card-footer {
+.inactive_card:hover .inactive_card_footer {
     opacity: 1;
 }
 /* End - inactive card */
