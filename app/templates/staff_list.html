@@ -16,6 +16,79 @@
         <h2 class="display-4 text-success font-weight-bold">Staff User List</h2>
     </div>
 
+    <div class="mt-2 mb-2 text-end">
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addStaffModal">
+            <i class="fa-solid fa-user-plus"></i>
+            Add New Staff
+        </button>
+    </div>
+
+    <div class="modal fade" id="addStaffModal" tabindex="-1" aria-labelledby="addStaffModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div class="modal-content card">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add a new Staff</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="{{ url_for('add_new_staff') }}">
+                        <div class="row justify-content-around">
+                            <div class="mb-3 col-6">
+                                <label for="username" class="form-label font-weight-bold text-success text-start">Username</label>
+                                <input type="text" class="form-control" name="username" id="username" required>
+                            </div>
+                            <div class="mb-3 col-6">
+                                <label for="password" class="form-label font-weight-bold text-success">Password</label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" name="password" id="password" required>
+                                    <div class="input-group-append">
+                                        <i class="fa-regular fa-eye" aria-hidden="true" onclick="togglePasswordVisibility('password')"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row justify-content-around">
+                            <div class="mb-3 col-6">
+                                <label for="first_name" class="form-label font-weight-bold text-success">First Name</label>
+                                <input type="text" class="form-control" name="first_name" id="first_name" required>
+                            </div>
+                            <div class="mb-3 col-6">
+                                <label for="last_name" class="form-label font-weight-bold text-success">Last Name</label>
+                                <input type="text" class="form-control" name="last_name" id="last_name" required>
+                            </div>
+                        </div>
+
+                        <div class="row justify-content-around">
+                            <div class="mb-3 col-6">
+                                <label for="work_phone" class="form-label font-weight-bold text-success">Work Phone</label>
+                                <input type="tel" pattern="[0-9]{10}" class="form-control" name="work_phone" id="work_phone" placeholder="example: 0271231234" required>
+                            </div>
+                            <div class="mb-3 col-6">
+                                <label for="email" class="form-label font-weight-bold text-success">Email</label>
+                                <input type="email" class="form-control" name="email" id="email" required>
+                            </div>
+                        </div>
+                        <div class="row justify-content-around">
+                            <div class="mb-3 col-6">
+                                <label for="position" class="form-label">Position</label>
+                                <input type="text" class="form-control" id="position" name="position" required>
+                            </div>
+                            <div class="mb-3 col-6">
+                                <label for="department" class="form-label">Department</label>
+                                <input type="text" class="form-control" id="department" name="department" required>
+                            </div>
+                        </div>  
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Close</button>
+                            <button type="submit" class="btn btn-success">Add</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         {% for staff in active_staffs %}
             {% set outer_index = loop.index %}
@@ -45,15 +118,150 @@
                                     </div>
                                     <div>
                                         <label class="form-label font-weight-bold text-success">Position & Department: </label>
+                                        <br/>
                                         {{staff[7]}} at {{staff[8]}}
                                     </div>
                                 </p>
                             </div>
+                            <div class="col-4 manage-buttons mt-5 d-md-flex align-items-end">
+                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                    <button type="button" class="btn btn-link btn-sm" data-bs-toggle="modal" data-bs-target="#updateStaffModal{{ outer_index }}">
+                                        <i class="fa-regular fa-pen-to-square" style="font-size: 1.3rem;"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-link btn-sm" data-bs-toggle="modal" data-bs-target="#deleteStaffModal{{ outer_index }}">
+                                        <i class="fa-regular fa-trash-can" style="font-size: 1.3rem;"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Update gardener Modal -->
+            <div class="modal fade" id="updateStaffModal{{ outer_index }}" tabindex="-1" aria-labelledby="#updateStaffModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-xl">
+                    <div class="modal-content card">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Update {{ staff[1] }}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="POST" action="{{ url_for('update_SA_profile', staff_id=staff[0]) }}">
+                                <div class="row justify-content-around">
+                                    <div class="mb-3 col-6">
+                                        <label for="first_name" class="form-label font-weight-bold text-success">First Name</label>
+                                        <input type="text" class="form-control" id="first_name" name="first_name" value="{{ staff[2] }}" required>
+                                    </div>
+                                    <div class="mb-3 col-6">
+                                        <label for="last_name" class="form-label font-weight-bold text-success">Last Name</label>
+                                        <input type="text" class="form-control" id="last_name" name="last_name" value="{{ staff[3] }}" required>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-around">
+                                    <div class="mb-3 col-6">
+                                        <label for="work_phone" class="form-label font-weight-bold text-success">Work Phone</label>
+                                        <input type="tel" pattern="[0-9]{10}" class="form-control" name="work_phone" id="work_phone" value="{{ staff[5] }}"required>
+                                    </div>
+                                    <div class="mb-3 col-6">
+                                        <label for="email" class="form-label font-weight-bold text-success">Email</label>
+                                        <input type="email" class="form-control" id="email" name="email" value="{{ staff[4] }}" required>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-around">
+                                    <div class="mb-3 col-6">
+                                        <label for="position" class="form-label font-weight-bold text-success">Position</label>
+                                        <input type="text" class="form-control" id="position" name="position" value="{{ staff[7] }}" required>
+                                    </div>
+                                    <div class="mb-3 col-6">
+                                        <label for="department" class="form-label font-weight-bold text-success">Department</label>
+                                        <input type="text" class="form-control" id="department" name="department" value="{{ staff[8] }}" required>
+                                    </div>
+                                </div>  
+
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Close</button>
+                                    <button type="submit" class="btn btn-success">Update</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Delete Confitmation Modal -->
+            <div class="modal fade" id="deleteStaffModal{{ outer_index }}" tabindex="-1" aria-labelledby="deleteStaffModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-xl">
+                    <div class="modal-content card">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Confirm delete {{staff[1]}}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure you want to delete {{staff[1]}}?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Close</button>
+                            <form method="POST" action="{{ url_for('delete_staff', staff_id=staff[0]) }}">
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
         {% endfor %}
     </div>
+
+    {% if inActive_staffs|length > 0 %}
+        <div>
+            <div class="text-center py-3 pt-5">
+                <h5 class="display-10 text-success font-weight-bold">Inactive Staff User</h5>
+            </div>
+            <div class="row">
+                {% for staff in inActive_staffs %}
+                    {% set outer_index = loop.index %}
+                    <div class="col-md-4 col-sm-6 mb-5">
+                        <div class="card inactive_card"> 
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <h5 class="card-title">
+                                            <div>
+                                                <label class="form-label font-weight-bold text-success">Username: </label>
+                                                {{staff[1]}}
+                                            </div>
+                                        </h5>
+                                        <p class="card-text"> 
+                                            <div>
+                                                <label class="form-label font-weight-bold text-success">Name: </label>
+                                                {{staff[2]}} {{staff[3]}}
+                                            </div>
+                                            <div>
+                                                <label class="form-label font-weight-bold text-success">Email: </label>
+                                                {{staff[4]}}
+                                            </div>
+                                            <div>
+                                                <label class="form-label font-weight-bold text-success">Work Phone: </label>
+                                                {{staff[5]}}
+                                            </div>
+                                            <div>
+                                                <label class="form-label font-weight-bold text-success">Position & Department: </label>
+                                                <br/>
+                                                {{staff[7]}} at {{staff[8]}}
+                                            </div>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <form method="POST" action="{{ url_for('recover_staff_account', staff_id=staff[0]) }}">
+                                    <button type="submit" class="btn btn-primary restore-button">Recover Account</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
 </div>
 {% endblock %}
