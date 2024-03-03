@@ -5,10 +5,12 @@ from flask import current_app
 import mysql.connector
 import app.connect as connect
 from werkzeug.utils import secure_filename
+from datetime import datetime
 import os
 
 dbconn = None
 connection = None
+ALLOWED_EXTENSIONS = {'png', 'jpg','jpeg','gif'}
 
 def getCursor():
     global dbconn
@@ -37,12 +39,24 @@ def handle_weed_data(weed_data):
             combined_data[weed_id]['images'].append(weed[8])
     return combined_data
 
+def allowed_file(file):
+    result = True
+    if type(file) == list:
+        for f in file:
+            result = '.' in f.filename and f.filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+            if not result:
+                break
+    else:
+        result = '.' in file.filename and file.filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    return result
 
 def save_image(file):
     filename = secure_filename(file.filename)
-    img_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+    timeStamp = datetime.now().strftime('%Y%m%d%H%M%S')
+    unique_name = f"{timeStamp}_{filename}"
+    img_path = os.path.join(current_app.config['UPLOAD_FOLDER'], unique_name)
     file.save(img_path)
-    return filename
+    return unique_name
 
 def url_select():
     user_type = session['userType']
