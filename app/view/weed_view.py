@@ -24,13 +24,10 @@ weed = Blueprint('weed', __name__)
 def weed_guide():
     profile_url = url_select()
     connection = getCursor()
-    weed_query = "SELECT * FROM weedguide"
-    weed_img_query = "SELECT * FROM weedimage"
-    connection.execute(weed_query)
+    query = "SELECT g.*, i.image_id, i.image_name, i.is_primary FROM biosercurity.weedguide g JOIN biosercurity.weedimage i ON g.weed_id = i.weed_id Order by weed_id ASC, is_primary DESC;"
+    connection.execute(query)
     weed_data = connection.fetchall()
-    connection.execute(weed_img_query)
-    weed_imgs = connection.fetchall()
-    weed_guide = handle_weed_data(weed_data, weed_imgs)
+    weed_guide = handle_weed_data(weed_data)
     return render_template("weed_guide.html", username=session['username'], userType=session['userType'], profile_url=profile_url, weed_guide=weed_guide)
 
 @weed.route('/weed_guide/add_new_weed', methods=['GET', 'POST'])
@@ -46,7 +43,6 @@ def add_new_weed():
         primary_image = request.files.get('primary_image')
         more_images = request.files.getlist('more_image')
 
-        
         if not (common_name and scientific_name and weed_type and description and impacts and control_methods and primary_image):
             flash("Please fill out the form!", "danger")
             return redirect(url_for('weed.weed_guide'))
@@ -90,7 +86,8 @@ def update_weed(weed_id):
         primary_image = request.form.get('set_primary_image')
         more_images = request.files.getlist('update_more_image')
         images_to_delete = request.form.get("images_to_delete")
-        print(images_to_delete)
+        print(primary_image)
+
             
         if not (common_name and scientific_name and weed_type and description and impacts and control_methods and primary_image):
             flash("Please fill out the form!", "danger")
