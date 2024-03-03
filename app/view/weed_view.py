@@ -7,14 +7,11 @@ from flask import flash
 from flask import session
 from flask import Blueprint
 from flask import current_app
-from werkzeug.security import generate_password_hash
-from werkzeug.security import check_password_hash
-from datetime import datetime
-import re
 from app.view.utils import getCursor
 from app.view.utils import url_select
 from app.view.utils import handle_weed_data
 from app.view.utils import save_image
+from app.view.utils import allowed_file
 import os
 
 weed = Blueprint('weed', __name__)
@@ -25,8 +22,14 @@ def weed_guide():
     profile_url = url_select()
     connection = getCursor()
     query = "SELECT g.*, i.image_id, i.image_name, i.is_primary FROM biosercurity.weedguide g JOIN biosercurity.weedimage i ON g.weed_id = i.weed_id Order by weed_id ASC, is_primary DESC;"
-    connection.execute(query)
-    weed_data = connection.fetchall()
+    try:
+        connection.execute(query)
+        weed_data = connection.fetchall()
+        if not weed_data:
+            flash("No weeds found in the database.", "info")
+    except Exception as e:
+        flash(f"Database error: {e}", "danger")
+        return redirect(url_for('home.home'))
     weed_guide = handle_weed_data(weed_data)
     return render_template("weed_guide.html", username=session['username'], userType=session['userType'], profile_url=profile_url, weed_guide=weed_guide)
 
@@ -46,6 +49,10 @@ def add_new_weed():
         if not (common_name and scientific_name and weed_type and description and impacts and control_methods and primary_image):
             flash("Please fill out the form!", "danger")
             return redirect(url_for('weed.weed_guide'))
+        
+        if not (allowed_file(primary_image) and allowed_file(more_images)):
+            flash("Please upload valid images.", "danger")
+            return redirect(url_for('weed.add_new_weed'))
         try:
             query = "INSERT INTO weedGuide (common_name, scientific_name, weed_type, description, impacts, control_methods) VALUES (%s, %s, %s, %s, %s, %s)"
             connection.execute(query, (common_name, scientific_name, weed_type, description, impacts, control_methods))
@@ -76,7 +83,6 @@ def add_new_weed():
 def update_weed(weed_id):
     connection = getCursor()
     if request.method == 'POST':
-        print(request.form)
         common_name = request.form.get('common_name')
         scientific_name = request.form.get('scientific_name')
         weed_type = request.form.get('weed_type')
@@ -86,12 +92,14 @@ def update_weed(weed_id):
         primary_image = request.form.get('set_primary_image')
         more_images = request.files.getlist('update_more_image')
         images_to_delete = request.form.get("images_to_delete")
-        print(primary_image)
-
-            
+        
         if not (common_name and scientific_name and weed_type and description and impacts and control_methods and primary_image):
             flash("Please fill out the form!", "danger")
             return redirect(url_for('weed.weed_guide'))
+        
+        if more_images[0].filename != "" and not allowed_file(more_images):
+            flash("Please upload valid images.", "danger")
+            return redirect(url_for('weed.add_new_weed'))
         
         try:
             query = "UPDATE weedimage SET is_primary=0 WHERE weed_id=%s AND is_primary=1 AND image_name!=%s"
@@ -104,8 +112,9 @@ def update_weed(weed_id):
             query = "INSERT INTO weedImage (weed_id, image_name, is_primary) VALUES (%s, %s, %s)"
             try:
                 for image in more_images:
-                    filename = save_image(image)
-                    connection.execute(query, (weed_id, filename, 0))
+                    if image.filename != "":
+                        filename = save_image(image)
+                        connection.execute(query, (weed_id, filename, 0))
             except:
                 pass
                 
