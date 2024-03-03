@@ -107,6 +107,10 @@ html, body {
 .card:hover{
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
 }
+
+.fixed-sized-image{
+    object-fit: cover;
+}
 /* End -card */
 
 /* form -general */
