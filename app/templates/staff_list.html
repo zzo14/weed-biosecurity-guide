@@ -15,14 +15,13 @@
     <div class="text-center py-3 pt-5">
         <h2 class="display-4 text-success font-weight-bold">Staff User List</h2>
     </div>
-
+    <!-- Add new gardener Modal -->
     <div class="mt-2 mb-2 text-end">
         <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addStaffModal">
             <i class="fa-solid fa-user-plus"></i>
             Add New Staff
         </button>
     </div>
-
     <div class="modal fade" id="addStaffModal" tabindex="-1" aria-labelledby="addStaffModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-xl">
             <div class="modal-content card">
@@ -40,7 +39,9 @@
                             <div class="mb-3 col-6">
                                 <label for="password" class="form-label font-weight-bold text-success">Password</label>
                                 <div class="input-group">
-                                    <input type="password" class="form-control" name="password" id="password" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{8,}$" title="Password must be at least 8 characters long and conatin uppercase, lowercase, number and special characters." required>
+                                    <input type="password" class="form-control" name="password" id="password"
+                                        title="Password must be at least 8 characters long and conatin uppercase, lowercase, number and special characters." 
+                                        oninput="validatePassword('password')" required>
                                     <div class="input-group-append">
                                         <i class="fa-regular fa-eye" aria-hidden="true" onclick="togglePasswordVisibility('password')"></i>
                                     </div>
@@ -89,6 +90,7 @@
         </div>
     </div>
 
+    <!-- view staff list -->
     <div class="row">
         {% for staff in active_staffs %}
             {% set outer_index = loop.index %}
@@ -137,6 +139,7 @@
                     </div>
                 </div>
             </div>
+
             <!-- Update gardener Modal -->
             <div class="modal fade" id="updateStaffModal{{ outer_index }}" tabindex="-1" aria-labelledby="#updateStaffModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-xl">
@@ -211,6 +214,8 @@
         {% endfor %}
     </div>
 
+    <!-- Admin can recover inactive staff account -->
+    <!-- only show if there are inactive staffs -->
     {% if inActive_staffs|length > 0 %}
         <div>
             <div class="text-center py-3 pt-5">
