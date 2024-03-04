@@ -28,6 +28,10 @@ html, body {
     text-align: center;
 }
 
+.alert {
+    transition: ocacity 0.6s ease;
+}
+
 #flash-messages .alert {
     border-radius: 5px;
     padding: 15px;
