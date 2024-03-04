@@ -1,9 +1,23 @@
+-- Drop the tables
+
+SET foreign_key_checks = 0;
+
+DROP TABLE IF EXISTS userauth;
+DROP TABLE IF EXISTS gardener;
+DROP TABLE IF EXISTS staff;
+DROP TABLE IF EXISTS administrator;
+DROP TABLE IF EXISTS weedguide;
+DROP TABLE IF EXISTS weedimage;
+
+SET foreign_key_checks = 1;
+
 /* ----- Create the tables: ----- */
 CREATE TABLE IF NOT EXISTS `userauth` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `username` VARCHAR(50) NOT NULL,
   `password_hash` VARCHAR(255) NOT NULL,
   `userType` ENUM('Admin', 'Staff', 'Gardener') NOT NULL,
+  `status` ENUM('Active', 'Inactive') NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
   UNIQUE INDEX `username_UNIQUE` (`username` ASC) VISIBLE);
@@ -107,17 +121,57 @@ CREATE TABLE IF NOT EXISTS `weedimage` (
     ON DELETE CASCADE
     ON UPDATE CASCADE);
 
+/* ----- Trigger for listen user status changing ----- */
+DELIMITER $$    
+CREATE TRIGGER update_gardener_status_trigger
+AFTER UPDATE ON gardener 
+FOR EACH ROW
+BEGIN
+	IF NEW.status <> OLD.status THEN
+		UPDATE userauth
+        SET status = NEW.status
+        WHERE userauth.id = NEW.gardener_id;
+	END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$    
+CREATE TRIGGER update_staff_status_trigger
+AFTER UPDATE ON staff 
+FOR EACH ROW
+BEGIN
+	IF NEW.status <> OLD.status THEN
+		UPDATE userauth
+        SET status = NEW.status
+        WHERE userauth.id = NEW.staff_id;
+	END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$    
+CREATE TRIGGER update_admin_status_trigger
+AFTER UPDATE ON administrator 
+FOR EACH ROW
+BEGIN
+	IF NEW.status <> OLD.status THEN
+		UPDATE userauth
+        SET status = NEW.status
+        WHERE userauth.id = NEW.admin_id;
+	END IF;
+END$$
+DELIMITER ;
+
 /* ----- Insert data into the tables: ----- */
-INSERT INTO userauth (username, password_hash, userType) VALUES
-    ('gardener1', 'scrypt:32768:8:1$3RY2MpKJfMBL6y2M$face964ccc797ac918e011d307e0d1b33c4d63ebce4a241d912edc0d498c47861f36ec03a6a39394376a930a982434b2edfa03283f4ea20f0b292c6514fce8e0', 'Gardener'),
-    ('gardener2', 'scrypt:32768:8:1$3RY2MpKJfMBL6y2M$face964ccc797ac918e011d307e0d1b33c4d63ebce4a241d912edc0d498c47861f36ec03a6a39394376a930a982434b2edfa03283f4ea20f0b292c6514fce8e0', 'Gardener'),
-    ('gardener3', 'scrypt:32768:8:1$3RY2MpKJfMBL6y2M$face964ccc797ac918e011d307e0d1b33c4d63ebce4a241d912edc0d498c47861f36ec03a6a39394376a930a982434b2edfa03283f4ea20f0b292c6514fce8e0', 'Gardener'),
-    ('gardener4', 'scrypt:32768:8:1$3RY2MpKJfMBL6y2M$face964ccc797ac918e011d307e0d1b33c4d63ebce4a241d912edc0d498c47861f36ec03a6a39394376a930a982434b2edfa03283f4ea20f0b292c6514fce8e0', 'Gardener'),
-    ('gardener5', 'scrypt:32768:8:1$3RY2MpKJfMBL6y2M$face964ccc797ac918e011d307e0d1b33c4d63ebce4a241d912edc0d498c47861f36ec03a6a39394376a930a982434b2edfa03283f4ea20f0b292c6514fce8e0', 'Gardener'),
-    ('staff1', 'scrypt:32768:8:1$3RY2MpKJfMBL6y2M$face964ccc797ac918e011d307e0d1b33c4d63ebce4a241d912edc0d498c47861f36ec03a6a39394376a930a982434b2edfa03283f4ea20f0b292c6514fce8e0', 'Staff'),
-    ('staff2', 'scrypt:32768:8:1$3RY2MpKJfMBL6y2M$face964ccc797ac918e011d307e0d1b33c4d63ebce4a241d912edc0d498c47861f36ec03a6a39394376a930a982434b2edfa03283f4ea20f0b292c6514fce8e0', 'Staff'),
-    ('staff3', 'scrypt:32768:8:1$3RY2MpKJfMBL6y2M$face964ccc797ac918e011d307e0d1b33c4d63ebce4a241d912edc0d498c47861f36ec03a6a39394376a930a982434b2edfa03283f4ea20f0b292c6514fce8e0', 'Staff'),
-    ('admin', 'scrypt:32768:8:1$3RY2MpKJfMBL6y2M$face964ccc797ac918e011d307e0d1b33c4d63ebce4a241d912edc0d498c47861f36ec03a6a39394376a930a982434b2edfa03283f4ea20f0b292c6514fce8e0', 'Admin');
+INSERT INTO userauth (username, password_hash, userType, status) VALUES
+    ('gardener1', 'scrypt:32768:8:1$3RY2MpKJfMBL6y2M$face964ccc797ac918e011d307e0d1b33c4d63ebce4a241d912edc0d498c47861f36ec03a6a39394376a930a982434b2edfa03283f4ea20f0b292c6514fce8e0', 'Gardener', 'Active'),
+    ('gardener2', 'scrypt:32768:8:1$3RY2MpKJfMBL6y2M$face964ccc797ac918e011d307e0d1b33c4d63ebce4a241d912edc0d498c47861f36ec03a6a39394376a930a982434b2edfa03283f4ea20f0b292c6514fce8e0', 'Gardener', 'Active' ),
+    ('gardener3', 'scrypt:32768:8:1$3RY2MpKJfMBL6y2M$face964ccc797ac918e011d307e0d1b33c4d63ebce4a241d912edc0d498c47861f36ec03a6a39394376a930a982434b2edfa03283f4ea20f0b292c6514fce8e0', 'Gardener', 'Active'),
+    ('gardener4', 'scrypt:32768:8:1$3RY2MpKJfMBL6y2M$face964ccc797ac918e011d307e0d1b33c4d63ebce4a241d912edc0d498c47861f36ec03a6a39394376a930a982434b2edfa03283f4ea20f0b292c6514fce8e0', 'Gardener', 'Active'),
+    ('gardener5', 'scrypt:32768:8:1$3RY2MpKJfMBL6y2M$face964ccc797ac918e011d307e0d1b33c4d63ebce4a241d912edc0d498c47861f36ec03a6a39394376a930a982434b2edfa03283f4ea20f0b292c6514fce8e0', 'Gardener', 'Active'),
+    ('staff1', 'scrypt:32768:8:1$3RY2MpKJfMBL6y2M$face964ccc797ac918e011d307e0d1b33c4d63ebce4a241d912edc0d498c47861f36ec03a6a39394376a930a982434b2edfa03283f4ea20f0b292c6514fce8e0', 'Staff', 'Active'),
+    ('staff2', 'scrypt:32768:8:1$3RY2MpKJfMBL6y2M$face964ccc797ac918e011d307e0d1b33c4d63ebce4a241d912edc0d498c47861f36ec03a6a39394376a930a982434b2edfa03283f4ea20f0b292c6514fce8e0', 'Staff', 'Active'),
+    ('staff3', 'scrypt:32768:8:1$3RY2MpKJfMBL6y2M$face964ccc797ac918e011d307e0d1b33c4d63ebce4a241d912edc0d498c47861f36ec03a6a39394376a930a982434b2edfa03283f4ea20f0b292c6514fce8e0', 'Staff', 'Active'),
+    ('admin', 'scrypt:32768:8:1$3RY2MpKJfMBL6y2M$face964ccc797ac918e011d307e0d1b33c4d63ebce4a241d912edc0d498c47861f36ec03a6a39394376a930a982434b2edfa03283f4ea20f0b292c6514fce8e0', 'Admin', 'Active');
 
 INSERT INTO gardener (gardener_id, username, first_name, last_name, address, email, phone_number, date_joined, status) VALUES
     (1, 'gardener1', 'John', 'Doe', '121 Main St', 'john.doe@example.com', '0271234567', '2024-01-01', 'Active'),
