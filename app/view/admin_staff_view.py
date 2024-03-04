@@ -15,37 +15,38 @@ from app.view.utils import url_select
 
 admin_staff = Blueprint('admin_staff', __name__)
 
+@admin_staff.before_request
+def before_request():
+    if 'loggedin' not in session and request.endpoint in ['admin_staff.staff_profile', 'admin_staff.admin_profile', 'admin_staff.gardener_list', 'admin_staff.staff_list']:
+        return redirect(url_for('home.home'))
+
 #Staff and admin functions
 @admin_staff.route('/staff_profile')
 def staff_profile():
-    if 'loggedin' in session:
-        if session['userType'] == 'Staff':
-            connection = getCursor()
-            id = session['id']
-            query = "SELECT * FROM staff WHERE staff_id = %s"
-            connection.execute(query, (id,))
-            staff = connection.fetchone()
-            return render_template("staff_profile.html", username=session['username'], userType=session['userType'], profile_url=url_for('admin_staff.staff_profile'), staff=staff)
-        else:
-            flash("Illegal Access!", "danger")
-            return redirect(url_for('home.home'))
+    # staff profile page
+    if session['userType'] == 'Staff':
+        connection = getCursor()
+        id = session['id']
+        query = "SELECT * FROM staff WHERE staff_id = %s"
+        connection.execute(query, (id,))
+        staff = connection.fetchone()
+        return render_template("staff_profile.html", username=session['username'], userType=session['userType'], profile_url=url_for('admin_staff.staff_profile'), staff=staff)
     else:
+        flash("Illegal Access!", "danger")
         return redirect(url_for('home.home'))
 
 @admin_staff.route('/admin_profile')
 def admin_profile():
-    if 'loggedin' in session:
-        if session['userType'] == 'Admin':
-            connection = getCursor()
-            id = session['id']
-            query = "SELECT * FROM administrator WHERE admin_id = %s"
-            connection.execute(query, (id,))
-            admin = connection.fetchone()
-            return render_template("admin_profile.html", username=session['username'], userType=session['userType'], profile_url=url_for('admin_staff.admin_profile'), admin=admin)
-        else:
-            flash("Illegal Access!", "danger")
-            return redirect(url_for('home.home'))
+    # staff profile page
+    if session['userType'] == 'Admin':
+        connection = getCursor()
+        id = session['id']
+        query = "SELECT * FROM administrator WHERE admin_id = %s"
+        connection.execute(query, (id,))
+        admin = connection.fetchone()
+        return render_template("admin_profile.html", username=session['username'], userType=session['userType'], profile_url=url_for('admin_staff.admin_profile'), admin=admin)
     else:
+        flash("Illegal Access!", "danger")
         return redirect(url_for('home.home'))
 
 @admin_staff.route('/update_SA_profile', defaults={'staff_id': None}, methods=['GET', 'POST'])
@@ -66,13 +67,19 @@ def update_SA_profile(staff_id):
         if not (first_name and last_name and work_phone and email and position and department):
             flash("Please fill out the form!", "danger")
             return redirect(profile_url)
+        if staff_id and session['userType'] != 'Admin':
+            flash("You are not authorized to update other staff's profile.", "danger")
+            return redirect(url_for('home.home'))
         
         try:
+            # update the user profile by user types
             target_id = id
             direct_to = profile_url
             query = "UPDATE staff SET first_name=%s, last_name=%s, email=%s, work_phone=%s, position=%s, department=%s WHERE staff_id = %s "
+            # if the user is admin, update the admin profile
             if usertype == 'Admin':
                 query = "UPDATE administrator SET first_name=%s, last_name=%s, email=%s, work_phone=%s, position=%s, department=%s WHERE admin_id = %s "
+                # if the user is admin and the staff_id is not None, meaning the admin is updating the staff profile
                 if staff_id:
                     target_id = staff_id
                     direct_to = url_for('admin_staff.staff_list')
@@ -85,14 +92,14 @@ def update_SA_profile(staff_id):
                 return redirect(direct_to)
             else:
                 flash("Update failed. Please try again.", "danger")
-
         except Exception as e:
             flash(f"Error: {e}. Update failed. Please try again.", "danger")
     return redirect(profile_url)
 
 @admin_staff.route('/gardener_list')
 def gardener_list():
-    if 'loggedin' in session and (session['userType'] == 'Staff' or session['userType'] == 'Admin'):
+    # admin/staff view gardener list
+    if (session['userType'] == 'Staff' or session['userType'] == 'Admin'):
         profile_url = url_select()
         connection = getCursor()
         query = "SELECT * FROM gardener"
@@ -119,11 +126,6 @@ def add_new_gardener():
         if not (username and password and first_name and last_name and address and email and phone_number):
             flash("Please fill out the form!", "danger")
             return redirect(url_for('admin_staff.add_new_gardener'))
-
-        if not re.match(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{8,}$', password):
-            flash("Password must be at least 8 characters long and conatin uppercase, lowercase, number and special characters.")
-            return redirect(url_for('admin_staff.add_new_gardener'))
-
         hashed_password = generate_password_hash(password) 
 
         try:
@@ -148,6 +150,7 @@ def add_new_gardener():
 def delete_gardener(gardener_id):
     connection = getCursor()
     if request.method == 'POST':
+        # delete the gardener by setting the status to 'Inactive'
         query = "UPDATE gardener SET status='Inactive' WHERE gardener_id = %s"
         connection.execute(query, (gardener_id,))
         affected_rows = connection.rowcount
@@ -160,6 +163,7 @@ def delete_gardener(gardener_id):
 
 @admin_staff.route('/gardener_list/recover_gardener_account/<int:gardener_id>',methods=['GET', 'POST'])
 def recover_gardener_account(gardener_id):
+    # recover the gardener by setting the status to 'Active'
     connection = getCursor()
     if request.method == 'POST':
         query = "UPDATE gardener SET status='Active' WHERE gardener_id = %s"
@@ -174,7 +178,8 @@ def recover_gardener_account(gardener_id):
 
 @admin_staff.route('/staff_list')
 def staff_list():
-    if 'loggedin' in session and session['userType'] == 'Admin':
+    # admin view staff list
+    if session['userType'] == 'Admin':
         connection = getCursor()
         query = "SELECT * FROM staff"
         connection.execute(query)
@@ -201,11 +206,6 @@ def add_new_staff():
         if not (username and password and first_name and last_name and work_phone and email and position and department):
             flash("Please fill out the form!", "danger")
             return redirect(url_for('admin_staff.add_new_staff'))
-
-        if not re.match(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{8,}$', password):
-            flash("Password must be at least 8 characters long and conatin uppercase, lowercase, number and special characters.")
-            return redirect(url_for('admin_staff.add_new_staff'))
-
         hashed_password = generate_password_hash(password) 
 
         try:
@@ -228,6 +228,7 @@ def add_new_staff():
 
 @admin_staff.route('/staff_list/delete_staff/<int:staff_id>', methods=['GET', 'POST'])
 def delete_staff(staff_id):
+    # delete the staff, same as gargener
     connection = getCursor()
     if request.method == 'POST':
         query = "UPDATE staff SET status='Inactive' WHERE staff_id = %s"
@@ -242,6 +243,7 @@ def delete_staff(staff_id):
 
 @admin_staff.route('/staff_list/recover_staff_account/<int:staff_id>',methods=['GET', 'POST'])
 def recover_staff_account(staff_id):
+    # recover the staff, same as gargener
     connection = getCursor()
     if request.method == 'POST':
         query = "UPDATE staff SET status='Active' WHERE staff_id = %s"
