@@ -22,6 +22,7 @@ def getCursor():
     return dbconn
 
 def handle_weed_data(weed_data):
+    # combine the data of the same weed, and append the images to the same weed data
     combined_data = {}
     for weed in weed_data:
         weed_id = weed[0]
@@ -40,6 +41,7 @@ def handle_weed_data(weed_data):
     return combined_data
 
 def allowed_file(file):
+    # check if the file is image
     result = True
     if type(file) == list:
         for f in file:
@@ -51,6 +53,7 @@ def allowed_file(file):
     return result
 
 def save_image(file):
+    # save the image to the static folder
     filename = secure_filename(file.filename)
     timeStamp = datetime.now().strftime('%Y%m%d%H%M%S')
     unique_name = f"{timeStamp}_{filename}"
@@ -59,6 +62,7 @@ def save_image(file):
     return unique_name
 
 def url_select():
+    # select the url for the user type
     user_type = session['userType']
     if user_type == 'Gardener':
         profile_url=url_for('user.gardener_profile')
@@ -71,6 +75,7 @@ def url_select():
     return profile_url
 
 def handle_user_data(role_list):
+    # separate the active and inactive user data
     active_roles = []
     inactive_roles = []
     for user in role_list:
