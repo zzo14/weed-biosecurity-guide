@@ -10,18 +10,20 @@ from app.view.utils import getCursor
 
 user = Blueprint('user', __name__)
 
+@user.before_request
+def before_request():
+    if 'loggedin' not in session and request.endpoint in ['user.gardener_profile']:
+        return redirect(url_for('home.home'))
+
 #User functions
 @user.route('/gardener_profile')
 def gardener_profile():
-    if 'loggedin' in session:
-        connection = getCursor()
-        id = session['id']
-        query = "SELECT * FROM gardener WHERE gardener_id = %s"
-        connection.execute(query, (id,))
-        user = connection.fetchone()
-        return render_template("gardener_profile.html", username=session['username'], userType=session['userType'], profile_url=url_for('user.gardener_profile'), user=user)
-    else:
-        return redirect(url_for('home.home'))
+    connection = getCursor()
+    id = session['id']
+    query = "SELECT * FROM gardener WHERE gardener_id = %s"
+    connection.execute(query, (id,))
+    user = connection.fetchone()
+    return render_template("gardener_profile.html", username=session['username'], userType=session['userType'], profile_url=url_for('user.gardener_profile'), user=user)
 
 @user.route('/gardener_profile/update_gardener_profile', defaults={'gardener_id': None}, methods=['GET', 'POST'])
 @user.route('/gardener_profile/update_gardener_profile/<int:gardener_id>', methods=['GET', 'POST'])
@@ -38,11 +40,16 @@ def update_gardener_profile(gardener_id):
         if not (first_name and last_name and address and email and phone_number):
             flash("Please fill out the form!", "danger")
             return redirect(url_for('user.gardener_profile'))
+        if gardener_id and session['userType'] != 'Admin':
+            flash("You are not authorized to update other gardener's profile.", "danger")
+            return redirect(url_for('home.home'))
         
         try: 
+            # update gardener profile by admin/staff
             if gardener_id:
                 target_id = gardener_id
                 direct_to = url_for('admin_staff.gardener_list')
+            # update gardener profile by gardener
             else:
                 target_id = id
                 direct_to = url_for('user.gardener_profile')
