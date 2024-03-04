@@ -22,6 +22,7 @@
             {% block header %}
             {% endblock %}
           </header>
+          <!-- Flash messages from the server -->
             {% with messages = get_flashed_messages(with_categories=true) %}
               {% if messages %}
               <div id="flash-messages">
