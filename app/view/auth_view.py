@@ -15,6 +15,16 @@ from app.view.utils import url_select
 
 auth = Blueprint('auth', __name__)
 
+@auth.before_request
+def before_request():
+    if 'loggedin' in session and request.endpoint in ['auth.login', 'auth.register']:
+        if session['userType'] == 'Gardener':
+            return redirect(url_for('user.gardener_profile'))
+        elif session['userType'] == 'Staff':
+            return redirect(url_for('admin_staff.staff_profile'))
+        elif session['userType'] == 'Admin':
+            return redirect(url_for('admin_staff.admin_profile'))
+
 #Login, Register and Logout
 @auth.route("/login", methods=['GET', 'POST'])
 def login():
@@ -22,7 +32,7 @@ def login():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
-        query = "SELECT * FROM userauth WHERE username = %s"
+        query = "SELECT * FROM userauth WHERE username = %s and status = 'Active' LIMIT 1"
         connection.execute(query, (username,))
         user = connection.fetchone()
         if user and check_password_hash(user[2], password):
@@ -33,15 +43,11 @@ def login():
             session['password'] = user[2]
             session['userType'] = user[3]
             flash("Welcome back! ", "success")
-            if session['userType'] == 'Gardener':
-                return redirect(url_for('user.gardener_profile'))
-            elif session['userType'] == 'Staff':
-                return redirect(url_for('admin_staff.staff_profile'))
-            elif session['userType'] == 'Admin':
-                return redirect(url_for('admin_staff.admin_profile'))
+            before_request()
             return redirect(url_for('auth.login'))
         else:
             flash("Invilid username or password, please try again.", "danger")
+            return redirect(url_for('auth.login'))
     return render_template("accounts/login.html")
 
 @auth.route("/register", methods=['GET', 'POST'])
@@ -58,10 +64,6 @@ def register():
 
         if not (username and password and first_name and last_name and address and email and phone_number):
             flash("Please fill out the form!", "danger")
-            return redirect(url_for('auth.register'))
-
-        if not re.match(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{8,}$', password):
-            flash("Password must be at least 8 characters long and conatin uppercase, lowercase, number and special characters.")
             return redirect(url_for('auth.register'))
 
         hashed_password = generate_password_hash(password) 
@@ -82,11 +84,12 @@ def register():
                 flash("Username already exists, please try another one.", "danger")
         except Exception as e:
             flash(f"Error: {e}. Register failed. Please try again.", "danger")
+            return redirect(url_for('auth.register'))
     return render_template("accounts/register.html")
 
 @auth.route('/logout')
 def logout():
-    # Remove session data, this will log the user out
+   # Remove session data, this will log the user out
    session.pop('loggedin', None)
    session.pop('id', None)
    session.pop('username', None)
@@ -100,7 +103,6 @@ def logout():
 def change_password():
     connection = getCursor()
     id = session['id']
-    password_regex = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{8,}$'
     profile_url = url_select()
     if request.method == 'POST':
         current_password = request.form.get('current_password')
@@ -110,12 +112,9 @@ def change_password():
         if not (current_password and new_password and confirm_password):
             flash("Please fill out the form!", "danger")
             return redirect(url_for('auth.change_password'))
-
+        # check if the entered current password is correct
         if not check_password_hash(session['password'], current_password):
             flash("Current Password is wrong! Please try again.", "danger")
-            return redirect(url_for('auth.change_password'))
-        if not re.match(password_regex, new_password):
-            flash("New password must be at least 8 characters long and conatin uppercase, lowercase, number and special characters.", "danger")
             return redirect(url_for('auth.change_password'))
         if new_password != confirm_password:
             flash("New password do not mathc, please try again!", "danger")
