@@ -15,6 +15,7 @@
     <div class="text-center py-3 pt-5">
         <h2 class="display-4 text-success font-weight-bold">Weed Guide</h2>
     </div>
+    <!-- Add weed button only for admin/staff -->
     {% if userType == 'Admin' or userType == 'Staff' %}
     <div class="mt-2 mb-2 text-end">
         <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addWeedModal">
@@ -22,13 +23,13 @@
             Add Weed
         </button>
     </div>
-
+    <!-- Add weed modal -->
     <div class="modal fade" id="addWeedModal" tabindex="-1" aria-labelledby="addWeedModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-xl">
             <div class="modal-content card">
                 <div class="modal-header">
                     <h5 class="modal-title">Add a new weed</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="resetForm('addWeedModal')"></button>
                 </div>
                 <div class="modal-body">
                     <form method="POST" action="{{ url_for('weed.add_new_weed') }}" enctype="multipart/form-data">
@@ -61,15 +62,17 @@
                         <div class="mb-3">
                             <label for="primary_image" class="form-label font-weight-bold text-success">Primary Image</label>
                             <input type="file" accept="image/*" class="form-control" id="primary_image" name="primary_image" onChange="previewImg(event)" data-preview="primary-image-preview" required>
+                            <!-- For previewing the image -->
                             <div class="row" id="primary-image-preview"></div>
                         </div>
                         <div class="mb-3">
                             <label for="more_image" class="form-label font-weight-bold text-success">More Image (Not Necessary)</label>
                             <input type="file" accept="image/*" class="form-control" id="more_image" name="more_image" onChange="previewImg(event)" data-preview="more-image-preview" multiple>
+                            <!-- For previewing the image -->
                             <div class="row" id="more-image-preview"></div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Close</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close" onclick="resetForm('addWeedModal')">Close</button>
                             <button type="submit" class="btn btn-success">Add</button>
                         </div>
                     </form>
@@ -78,8 +81,7 @@
         </div>
     </div>
     {% endif %}
-
-
+    <!-- Display all weeds -->
     <div class="row">
         {% for weed_id, weed in weed_guide.items() %}
             {% set outer_index = loop.index %}
@@ -92,6 +94,7 @@
                                 <h5 class="card-title"><ins>{{ weed.common_name }}</ins></h5>
                                 <p class="card-text"> {{ weed.weed_type }}</p>
                             </div>
+                            <!-- Manage buttons only for admin/staff -->
                             {% if userType == 'Admin' or userType == 'Staff' %}
                                 <div class="col-4 manage-buttons mt-3">
                                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
@@ -119,7 +122,7 @@
                                 <div class="modal-body">
                                     <div class="row align-items-start">
                                         <div class="col-md-8 d-flex justify-content-center align-items-center">
-                                            <img src="/static/images/db/{{ weed.images[0 ]}}" class="img-fluid rounded border shadow-sm"
+                                            <img src="/static/images/db/{{ weed.images[0] }}" class="img-fluid rounded border shadow-sm"
                                                 alt="Image showcasing weed"
                                                 style="min-width: 200px; width: 100%; height: auto;">
                                         </div>
@@ -144,6 +147,7 @@
                                             </dl>
                                         </div>
                                     </div>
+                                    <!-- More images which are not primary -->
                                     {% if weed.images|length > 1 %}
                                         <div class="row">
                                             <div class="col-12 mt-3 font-weight-bold text-success text-center">
@@ -168,7 +172,7 @@
                         <div class="modal-content card">
                             <div class="modal-header">
                                 <h5 class="modal-title">Update weed {{ weed.common_name }}</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="resetForm('updateWeedModal{{ outer_index }}')"></button>
                             </div>
                             <div class="modal-body">
                                 <form method="POST" action="{{ url_for('weed.update_weed', weed_id=weed_id) }}" enctype="multipart/form-data">
@@ -198,6 +202,7 @@
                                         <label for="control_methods" class="form-label font-weight-bold text-success">Control Methods</label>
                                         <textarea class="form-control" id="control_methods" name="control_methods" rows="2" required>{{ weed.control_methods }}</textarea>
                                     </div>
+                                    <!-- set primary image and delete other non-primary images -->
                                     <div class="mb-3">
                                         <label for="set_primary_image" class="form-label font-weight-bold text-success">Set Primary Image & Deltet more images</label>
                                         <div class="row align-items-end">
@@ -209,6 +214,7 @@
                                                             <input class="form-check-input" type="radio" name="set_primary_image" id="set_primary_image{{ outer_index }}_{{ loop.index }}" value={{image}} {% if loop.first %}checked{% endif %}>
                                                         </div>
                                                     </div>
+                                                    <!-- only show delete button for non-primary images -->
                                                     {% if not loop.first %}
                                                         <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0" onclick="markForDeletion('{{ image }}', '{{outer_index}}', '{{ loop.index }}')">X</button>
                                                     {% endif %}
@@ -220,10 +226,11 @@
                                     <div class="mb-3">
                                         <label for="more_image" class="form-label">More Image (Not Necessary)</label>
                                         <input type="file" accept="image/*" class="form-control" id="update_more_image" name="update_more_image" onChange="previewImg(event)" data-preview="update-more-image-preview{{ outer_index }}" multiple>
+                                        <!-- For previewing the image -->
                                         <div class="row" id="update-more-image-preview{{ outer_index}}"></div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Close</button>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close" onclick="resetForm('updateWeedModal{{ outer_index }}')">Close</button>
                                         <button type="submit" class="btn btn-success">Update</button>
                                     </div>
                                 </form>
