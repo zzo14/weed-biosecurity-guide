@@ -15,7 +15,7 @@
     <div class="text-center py-3 pt-5">
         <h2 class="display-4 text-success font-weight-bold">Gardener User List</h2>
     </div>
-
+    <!-- Only Admin can manage gardeners list -->
     {% if userType == 'Admin' %}
         <div class="mt-2 mb-2 text-end">
             <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addUserModal">
@@ -23,7 +23,7 @@
                 Add New Gardener
             </button>
         </div>
-
+        <!-- Add new gardener Modal -->
         <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-xl">
                 <div class="modal-content card">
@@ -41,7 +41,9 @@
                                 <div class="mb-3 col-6">
                                     <label for="password" class="form-label font-weight-bold text-success">Password</label>
                                     <div class="input-group">
-                                        <input type="password" class="form-control" name="password" id="password" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{8,}$" title="Password must be at least 8 characters long and conatin uppercase, lowercase, number and special characters." required>
+                                        <input type="password" class="form-control" name="password" id="password"
+                                            title="Password must be at least 8 characters long and conatin uppercase, lowercase, number and special characters." 
+                                            oninput="validatePassword('password')" required>
                                         <div class="input-group-append">
                                             <i class="fa-regular fa-eye" aria-hidden="true" onclick="togglePasswordVisibility('password')"></i>
                                         </div>
@@ -84,12 +86,18 @@
             </div>
         </div>
     {% endif %}
-
+    
+    <!-- view gardener list -->
     <div class="row">
         {% for gardener in active_gardeners %}
             {% set outer_index = loop.index %}
             <div class="col-md-4 col-sm-6 mb-5">
-                <div class="card" data-bs-toggle="modal" data-bs-target="#updateGardenerModal{{ outer_index }}"> 
+                <!-- Only Admin can manage gardeners list -->
+                {% if userType == 'Admin' %}
+                <div class="card" data-bs-toggle="modal" data-bs-target="#updateGardenerModal{{ outer_index }}">
+                {% else %}
+                <div class="card">
+                {% endif %}
                     <div class="card-body">
                         <div class="row">
                             <div class="col-8">
@@ -122,6 +130,7 @@
                                     </div>
                                 </p>
                             </div>
+                            <!-- Only Admin can manage gardeners list -->
                             {% if userType == 'Admin' %}
                                 <div class="col-4 manage-buttons mt-5 d-md-flex align-items-end">
                                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
@@ -206,8 +215,10 @@
             </div>
         {% endfor %}
     </div>
-
+    
+    <!-- Admin can recover inactive gardener account -->
     {% if userType == 'Admin' %}
+        <!-- only show if there are inactive gardeners -->
         {% if inActive_gardeners|length > 0 %}
             <div>
                 <div class="text-center py-3 pt-5">
