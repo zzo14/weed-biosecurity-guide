@@ -203,6 +203,7 @@ INSERT INTO weedguide (common_name, scientific_name, weed_type, description, imp
 
 INSERT INTO weedimage (weed_id, image_name, is_primary) VALUES
     (1, 'annual_poa_N1_.width-400.format-webp.webp', TRUE),
+    (1, 'Poa annua - annual poa grass weed in zeon zoysia.webp', FALSE),
     (2, 'nightshadeB1.width-400.format-webp.webp', TRUE),
     (3, 'blackberryB1.width-400.format-webp.webp', TRUE),
     (4, 'bracken1.width-400.format-webp.webp', TRUE),
