@@ -65,7 +65,7 @@ def register():
         if not (username and password and first_name and last_name and address and email and phone_number):
             flash("Please fill out the form!", "danger")
             return redirect(url_for('auth.register'))
-
+        # hash the password by using werkzeug.security
         hashed_password = generate_password_hash(password) 
 
         try:
@@ -117,7 +117,7 @@ def change_password():
             flash("Current Password is wrong! Please try again.", "danger")
             return redirect(url_for('auth.change_password'))
         if new_password != confirm_password:
-            flash("New password do not mathc, please try again!", "danger")
+            flash("New password do not match, please try again!", "danger")
             return redirect(url_for('auth.change_password'))
         hashed_new_password = generate_password_hash(new_password)
 
@@ -126,6 +126,7 @@ def change_password():
             connection.execute(query, (hashed_new_password, id,))
             affected_rows = connection.rowcount
             if affected_rows > 0:
+                session['password'] = hashed_new_password
                 flash("Successfully change password! ", "success")
                 return redirect(url_for('auth.change_password'))
             else:
