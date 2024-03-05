@@ -13,17 +13,22 @@ user = Blueprint('user', __name__)
 @user.before_request
 def before_request():
     if 'loggedin' not in session and request.endpoint in ['user.gardener_profile']:
+        flash("Illegal Access!", "danger")
         return redirect(url_for('home.home'))
 
 #User functions
 @user.route('/gardener_profile')
 def gardener_profile():
-    connection = getCursor()
-    id = session['id']
-    query = "SELECT * FROM gardener WHERE gardener_id = %s"
-    connection.execute(query, (id,))
-    user = connection.fetchone()
-    return render_template("gardener_profile.html", username=session['username'], userType=session['userType'], profile_url=url_for('user.gardener_profile'), user=user)
+    if session['userType'] == 'Gardener':
+        connection = getCursor()
+        id = session['id']
+        query = "SELECT * FROM gardener WHERE gardener_id = %s"
+        connection.execute(query, (id,))
+        user = connection.fetchone()
+        return render_template("gardener_profile.html", username=session['username'], userType=session['userType'], profile_url=url_for('user.gardener_profile'), user=user)
+    else:
+        flash("Illegal Access!", "danger")
+        return redirect(url_for('home.home'))
 
 @user.route('/gardener_profile/update_gardener_profile', defaults={'gardener_id': None}, methods=['GET', 'POST'])
 @user.route('/gardener_profile/update_gardener_profile/<int:gardener_id>', methods=['GET', 'POST'])
