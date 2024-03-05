@@ -6,9 +6,11 @@ dbhost = "localhost"
 dbport = "3306"
 dbname = "biosercurity"
 
-# #For PythonAnyWhere
+# #For PythonAnyWhere 
 # dbuser = "PatrickZou" # Your MySQL username - likely 'root'
 # dbpass = "pz123321" # ---- PUT YOUR PASSWORD HERE ----
 # dbhost = "PatrickZou.mysql.pythonanywhere-services.com"
 # dbport = "3306"
-# dbname = "PatrickZou$motorkhana"
+# dbname = "PatrickZou$motorkhana" 
+
+#For testing
