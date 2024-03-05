@@ -12,5 +12,3 @@ dbname = "biosercurity"
 # dbhost = "PatrickZou.mysql.pythonanywhere-services.com"
 # dbport = "3306"
 # dbname = "PatrickZou$motorkhana" 
-
-#For testing
