@@ -142,8 +142,10 @@ def add_new_gardener():
                     return redirect(url_for('admin_staff.gardener_list'))
             else:
                 flash("Username already exists, please try another one.", "danger")
+                return redirect(url_for('admin_staff.gardener_list'))
         except Exception as e:
             flash(f"Error: {e}. Add failed. Please try again.", "danger")
+            return redirect(url_for('admin_staff.gardener_list'))
     return redirect(url_for('admin_staff.add_new_gardener'))
 
 @admin_staff.route('/gardener_list/delete_gardener/<int:gardener_id>', methods=['GET', 'POST'])
@@ -222,8 +224,10 @@ def add_new_staff():
                     return redirect(url_for('admin_staff.staff_list'))
             else:
                 flash("Username already exists, please try another one.", "danger")
+                return redirect(url_for('admin_staff.staff_list'))
         except Exception as e:
             flash(f"Error: {e}. Add failed. Please try again.", "danger")
+            return redirect(url_for('admin_staff.staff_list'))
     return redirect(url_for('admin_staff.add_new_staff'))
 
 @admin_staff.route('/staff_list/delete_staff/<int:staff_id>', methods=['GET', 'POST'])
