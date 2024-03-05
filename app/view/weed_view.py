@@ -57,7 +57,7 @@ def add_new_weed():
             flash("Please fill out the form!", "danger")
             return redirect(url_for('weed.weed_guide'))
         # check if the file is image
-        if not (allowed_file(primary_image) and allowed_file(more_images)):
+        if not allowed_file(primary_image) or (more_images[0].filename != "" and not allowed_file(more_images)):
             flash("Please upload valid images.", "danger")
             return redirect(url_for('weed.add_new_weed'))
         try:
