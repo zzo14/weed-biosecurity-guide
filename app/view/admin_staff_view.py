@@ -12,6 +12,7 @@ import re
 from app.view.utils import getCursor
 from app.view.utils import handle_user_data
 from app.view.utils import url_select
+from app.view.utils import handle_user_status
 
 admin_staff = Blueprint('admin_staff', __name__)
 
@@ -153,14 +154,12 @@ def delete_gardener(gardener_id):
     connection = getCursor()
     if request.method == 'POST':
         # delete the gardener by setting the status to 'Inactive'
-        query = "UPDATE gardener SET status='Inactive' WHERE gardener_id = %s"
-        connection.execute(query, (gardener_id,))
-        affected_rows = connection.rowcount
-        if affected_rows > 0:
+        if handle_user_status(connection, 'gardener', gardener_id, 'Inactive'):
             flash("Successfully delete the gardener!", "success")
             return redirect(url_for('admin_staff.gardener_list'))
         else:
             flash("Delete failed. Please try again.", "danger")
+            return redirect(url_for('admin_staff.gardener_list'))
     return redirect(url_for('admin_staff.gardener_list'))
 
 @admin_staff.route('/gardener_list/recover_gardener_account/<int:gardener_id>',methods=['GET', 'POST'])
@@ -168,14 +167,12 @@ def recover_gardener_account(gardener_id):
     # recover the gardener by setting the status to 'Active'
     connection = getCursor()
     if request.method == 'POST':
-        query = "UPDATE gardener SET status='Active' WHERE gardener_id = %s"
-        connection.execute(query, (gardener_id,))
-        affected_rows = connection.rowcount
-        if affected_rows > 0:
+        if handle_user_status(connection, 'gardener', gardener_id, 'Active'):
             flash("Successfully recover the gardener!", "success")
             return redirect(url_for('admin_staff.gardener_list'))
         else:
             flash("Recover failed. Please try again.", "danger")
+            return redirect(url_for('admin_staff.gardener_list'))
     return redirect(url_for('admin_staff.gardener_list'))
 
 @admin_staff.route('/staff_list')
@@ -235,14 +232,12 @@ def delete_staff(staff_id):
     # delete the staff, same as gargener
     connection = getCursor()
     if request.method == 'POST':
-        query = "UPDATE staff SET status='Inactive' WHERE staff_id = %s"
-        connection.execute(query, (staff_id,))
-        affected_rows = connection.rowcount
-        if affected_rows > 0:
-            flash("Successfully delete the gardener!", "success")
+        if handle_user_status(connection, 'staff', staff_id, 'Inactive'):
+            flash("Successfully delete the staff!", "success")
             return redirect(url_for('admin_staff.staff_list'))
         else:
             flash("Delete failed. Please try again.", "danger")
+            return redirect(url_for('admin_staff.staff_list'))
     return redirect(url_for('admin_staff.staff_list'))
 
 @admin_staff.route('/staff_list/recover_staff_account/<int:staff_id>',methods=['GET', 'POST'])
@@ -250,12 +245,10 @@ def recover_staff_account(staff_id):
     # recover the staff, same as gargener
     connection = getCursor()
     if request.method == 'POST':
-        query = "UPDATE staff SET status='Active' WHERE staff_id = %s"
-        connection.execute(query, (staff_id,))
-        affected_rows = connection.rowcount
-        if affected_rows > 0:
+        if handle_user_status(connection, 'staff', staff_id, 'Active'):
             flash("Successfully recover the staff!", "success")
             return redirect(url_for('admin_staff.staff_list'))
         else:
             flash("Recover failed. Please try again.", "danger")
+            return redirect(url_for('admin_staff.staff_list'))
     return redirect(url_for('admin_staff.staff_list'))
