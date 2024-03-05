@@ -84,3 +84,21 @@ def handle_user_data(role_list):
         else:
             inactive_roles.append(user)
     return active_roles, inactive_roles
+
+def handle_user_status(dbconnect, userType, user_id, status):
+    # delete the user from the database by setting the status to inactive
+
+    if userType == 'gardener':
+        query = "UPDATE gardener SET status=%s WHERE gardener_id = %s"
+    else:
+        query = "UPDATE staff SET status=%s WHERE staff_id = %s"
+    dbconnect.execute(query, (status, user_id,))
+    affected_rows = dbconnect.rowcount
+    if affected_rows > 0:
+        query = "UPDATE userauth SET status=%s WHERE id = %s"
+        dbconnect.execute(query, (status, user_id,))
+        affected_rows = dbconnect.rowcount
+        print(affected_rows)
+        if affected_rows > 0:
+            return True
+    return False
