@@ -130,7 +130,7 @@ def add_new_gardener():
         hashed_password = generate_password_hash(password) 
 
         try:
-            query = "INSERT INTO userAuth (username, password_hash, userType) VALUES (%s, %s, %s)"
+            query = "INSERT INTO userauth (username, password_hash, userType) VALUES (%s, %s, %s)"
             connection.execute(query, (username, hashed_password, 'Gardener'))
             new_id = connection.lastrowid
             affected_rows = connection.rowcount
@@ -208,7 +208,7 @@ def add_new_staff():
         hashed_password = generate_password_hash(password) 
 
         try:
-            query = "INSERT INTO userAuth (username, password_hash, userType) VALUES (%s, %s, %s)"
+            query = "INSERT INTO userauth (username, password_hash, userType) VALUES (%s, %s, %s)"
             connection.execute(query, (username, hashed_password, 'Staff'))
             new_id = connection.lastrowid
             affected_rows = connection.rowcount
