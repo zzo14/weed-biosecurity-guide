@@ -27,7 +27,7 @@ def weed_guide():
     # fetch the weed guide data from the database
     profile_url = url_select()
     connection = getCursor()
-    query = "SELECT g.*, i.image_id, i.image_name, i.is_primary FROM biosercurity.weedguide g JOIN biosercurity.weedimage i ON g.weed_id = i.weed_id Order by weed_id ASC, is_primary DESC;"
+    query = "SELECT g.*, i.image_id, i.image_name, i.is_primary FROM weedguide g JOIN weedimage i ON g.weed_id = i.weed_id Order by weed_id ASC, is_primary DESC;"
     try:
         connection.execute(query)
         weed_data = connection.fetchall()
@@ -62,14 +62,14 @@ def add_new_weed():
             return redirect(url_for('weed.add_new_weed'))
         try:
             # insert the weed data to the weedguide table
-            query = "INSERT INTO weedGuide (common_name, scientific_name, weed_type, description, impacts, control_methods) VALUES (%s, %s, %s, %s, %s, %s)"
+            query = "INSERT INTO weedguide (common_name, scientific_name, weed_type, description, impacts, control_methods) VALUES (%s, %s, %s, %s, %s, %s)"
             connection.execute(query, (common_name, scientific_name, weed_type, description, impacts, control_methods))
             new_id = connection.lastrowid
             affected_rows = connection.rowcount
 
             # insert the image data to the weedimage table
             if new_id and affected_rows > 0:
-                query = "INSERT INTO weedImage (weed_id, image_name, is_primary) VALUES (%s, %s, %s)"
+                query = "INSERT INTO weedimage (weed_id, image_name, is_primary) VALUES (%s, %s, %s)"
                 primary_filename = save_image(primary_image)
                 connection.execute(query, (new_id, primary_filename, 1))
                 try:
@@ -122,7 +122,7 @@ def update_weed(weed_id):
                 query = "UPDATE weedimage SET is_primary=1 WHERE weed_id=%s AND image_name=%s"
                 connection.execute(query, (weed_id, primary_image,))
             #insert the new images to the weedimage table
-            query = "INSERT INTO weedImage (weed_id, image_name, is_primary) VALUES (%s, %s, %s)"
+            query = "INSERT INTO weedimage (weed_id, image_name, is_primary) VALUES (%s, %s, %s)"
             try:
                 for image in more_images:
                     if image.filename != "":
