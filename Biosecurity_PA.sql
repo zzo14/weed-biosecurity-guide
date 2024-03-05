@@ -121,45 +121,45 @@ CREATE TABLE IF NOT EXISTS `weedimage` (
     ON DELETE CASCADE
     ON UPDATE CASCADE);
 
-/* ----- Trigger for listen user status changing ----- */
-DELIMITER $$    
-CREATE TRIGGER update_gardener_status_trigger
-AFTER UPDATE ON gardener 
-FOR EACH ROW
-BEGIN
-	IF NEW.status <> OLD.status THEN
-		UPDATE userauth
-        SET status = NEW.status
-        WHERE userauth.id = NEW.gardener_id;
-	END IF;
-END$$
-DELIMITER ;
+-- /* ----- Trigger for listen user status changing ----- */
+-- DELIMITER $$    
+-- CREATE TRIGGER update_gardener_status_trigger
+-- AFTER UPDATE ON gardener 
+-- FOR EACH ROW
+-- BEGIN
+-- 	IF NEW.status <> OLD.status THEN
+-- 		UPDATE userauth
+--         SET status = NEW.status
+--         WHERE userauth.id = NEW.gardener_id;
+-- 	END IF;
+-- END$$
+-- DELIMITER ;
 
-DELIMITER $$    
-CREATE TRIGGER update_staff_status_trigger
-AFTER UPDATE ON staff 
-FOR EACH ROW
-BEGIN
-	IF NEW.status <> OLD.status THEN
-		UPDATE userauth
-        SET status = NEW.status
-        WHERE userauth.id = NEW.staff_id;
-	END IF;
-END$$
-DELIMITER ;
+-- DELIMITER $$    
+-- CREATE TRIGGER update_staff_status_trigger
+-- AFTER UPDATE ON staff 
+-- FOR EACH ROW
+-- BEGIN
+-- 	IF NEW.status <> OLD.status THEN
+-- 		UPDATE userauth
+--         SET status = NEW.status
+--         WHERE userauth.id = NEW.staff_id;
+-- 	END IF;
+-- END$$
+-- DELIMITER ;
 
-DELIMITER $$    
-CREATE TRIGGER update_admin_status_trigger
-AFTER UPDATE ON administrator 
-FOR EACH ROW
-BEGIN
-	IF NEW.status <> OLD.status THEN
-		UPDATE userauth
-        SET status = NEW.status
-        WHERE userauth.id = NEW.admin_id;
-	END IF;
-END$$
-DELIMITER ;
+-- DELIMITER $$    
+-- CREATE TRIGGER update_admin_status_trigger
+-- AFTER UPDATE ON administrator 
+-- FOR EACH ROW
+-- BEGIN
+-- 	IF NEW.status <> OLD.status THEN
+-- 		UPDATE userauth
+--         SET status = NEW.status
+--         WHERE userauth.id = NEW.admin_id;
+-- 	END IF;
+-- END$$
+-- DELIMITER ;
 
 /* ----- Insert data into the tables: ----- */
 INSERT INTO userauth (username, password_hash, userType, status) VALUES
