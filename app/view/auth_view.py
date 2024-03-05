@@ -69,7 +69,7 @@ def register():
         hashed_password = generate_password_hash(password) 
 
         try:
-            query = "INSERT INTO userAuth (username, password_hash, userType) VALUES (%s, %s, %s)"
+            query = "INSERT INTO userauth (username, password_hash, userType) VALUES (%s, %s, %s)"
             connection.execute(query, (username, hashed_password, 'Gardener'))
             new_id = connection.lastrowid
             affected_rows = connection.rowcount
@@ -122,7 +122,7 @@ def change_password():
         hashed_new_password = generate_password_hash(new_password)
 
         try:
-            query = "UPDATE userAuth SET password_hash=%s WHERE id=%s"
+            query = "UPDATE userauth SET password_hash=%s WHERE id=%s"
             connection.execute(query, (hashed_new_password, id,))
             affected_rows = connection.rowcount
             if affected_rows > 0:
