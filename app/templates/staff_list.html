@@ -41,7 +41,12 @@
                                 <div class="input-group">
                                     <input type="password" class="form-control" name="password" id="password"
                                         title="Password must be at least 8 characters long and conatin uppercase, lowercase, number and special characters." 
-                                        oninput="validatePassword('password')" required>
+                                        oninput="validatePassword('password', 'password-tooltip')" required>
+                                    <div class="tooltip" id="password-tooltip">
+                                        Password must be: <br/>
+                                         - at least 8 characters long <br/>
+                                         - conatin uppercase, lowercase, number and special characters.
+                                    </div>
                                     <div class="input-group-append">
                                         <i class="fa-regular fa-eye" aria-hidden="true" onclick="togglePasswordVisibility('password')"></i>
                                     </div>
@@ -62,7 +67,7 @@
                         <div class="row justify-content-around">
                             <div class="mb-3 col-6">
                                 <label for="work_phone" class="form-label font-weight-bold text-success">Work Phone</label>
-                                <input type="tel" pattern="[0-9]{10}" class="form-control" name="work_phone" id="work_phone" placeholder="example: 0271231234" required>
+                                <input type="tel" pattern="[0-9]{10}" class="form-control" name="work_phone" id="work_phone" title="Please enter a vaild phone number.example: 0271231234." required>
                             </div>
                             <div class="mb-3 col-6">
                                 <label for="email" class="form-label font-weight-bold text-success">Email</label>
@@ -121,7 +126,8 @@
                                     <div>
                                         <label class="form-label font-weight-bold text-success">Position & Department: </label>
                                         <br/>
-                                        {{staff[7]}} at {{staff[8]}}
+                                        {{staff[7]}} at {{staff[8]}} <br/>
+                                        Since {{staff[6]}}
                                     </div>
                                 </p>
                             </div>
@@ -163,7 +169,7 @@
                                 <div class="row justify-content-around">
                                     <div class="mb-3 col-6">
                                         <label for="work_phone" class="form-label font-weight-bold text-success">Work Phone</label>
-                                        <input type="tel" pattern="[0-9]{10}" class="form-control" name="work_phone" id="work_phone" value="{{ staff[5] }}"required>
+                                        <input type="tel" pattern="[0-9]{10}" class="form-control" name="work_phone" id="work_phone" value="{{ staff[5] }}" title="Please enter a vaild phone number.example: 0271231234." required>
                                     </div>
                                     <div class="mb-3 col-6">
                                         <label for="email" class="form-label font-weight-bold text-success">Email</label>
@@ -251,7 +257,8 @@
                                             <div>
                                                 <label class="form-label font-weight-bold text-success">Position & Department: </label>
                                                 <br/>
-                                                {{staff[7]}} at {{staff[8]}}
+                                                {{staff[7]}} at {{staff[8]}} <br/>
+                                                Since {{staff[6]}}
                                             </div>
                                         </p>
                                     </div>
