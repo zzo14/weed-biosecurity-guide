@@ -30,16 +30,19 @@ function togglePasswordVisibility(password_id) {
 };
 
 // change password input border color based on password complexity and enable/disable submit button
-function validatePassword(password_id) {
+function validatePassword(password_id, tooltip_id) {
     var passwordInput = document.getElementById(password_id);
-    var submitButton = passwordInput.form.querySelector('button[type="submit"]');
+    var tooltip = document.getElementById(tooltip_id)
+    var submitButton = passwordInput.form.querySelector('button[type=submit]')
     var pattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{8,}$/;
     
     if (pattern.test(passwordInput.value)) {
         passwordInput.style.borderColor = 'green';
+        tooltip.style.display = 'none';
         submitButton.disabled = false;
     } else {
         passwordInput.style.borderColor = 'red';
+        tooltip.style.display = 'block';
         submitButton.disabled = true;
     }
 }
@@ -107,9 +110,6 @@ function markForDeletion(imageName, parentIndex, index) {
     } else {
         currentImage.value = imageName;
     }
-    console.log(currentImage)
-    console.log(currentImage.value)
-
     var imgDiv = document.getElementById('imgDiv' + parentIndex + '_' + index);
     imgDiv.style.display = 'none';
 }
