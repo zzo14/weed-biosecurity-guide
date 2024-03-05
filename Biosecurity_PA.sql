@@ -37,12 +37,12 @@ CREATE TABLE IF NOT EXISTS `gardener` (
   UNIQUE INDEX `username_UNIQUE` (`username` ASC) VISIBLE,
   CONSTRAINT `fk_gardener_id`
     FOREIGN KEY (`gardener_id`)
-    REFERENCES `biosercurity`.`userauth` (`id`)
+    REFERENCES `userauth` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_gardener_username`
     FOREIGN KEY (`username`)
-    REFERENCES `biosercurity`.`userauth` (`username`)
+    REFERENCES `userauth` (`username`)
     ON DELETE CASCADE
     ON UPDATE CASCADE);
 
@@ -62,12 +62,12 @@ CREATE TABLE IF NOT EXISTS `staff` (
   UNIQUE INDEX `username_UNIQUE` (`username` ASC) VISIBLE,
   CONSTRAINT `fk_staff_id`
     FOREIGN KEY (`staff_id`)
-    REFERENCES `biosercurity`.`userauth` (`id`)
+    REFERENCES `userauth` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_staff_username`
     FOREIGN KEY (`username`)
-    REFERENCES `biosercurity`.`userauth` (`username`)
+    REFERENCES `userauth` (`username`)
     ON DELETE CASCADE
     ON UPDATE CASCADE);
 
@@ -87,12 +87,12 @@ CREATE TABLE IF NOT EXISTS `administrator` (
   UNIQUE INDEX `admin_id_UNIQUE` (`admin_id` ASC) VISIBLE,
   CONSTRAINT `fk_admin_id`
     FOREIGN KEY (`admin_id`)
-    REFERENCES `biosercurity`.`userauth` (`id`)
+    REFERENCES `userauth` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_admin_username`
     FOREIGN KEY (`username`)
-    REFERENCES `biosercurity`.`userauth` (`username`)
+    REFERENCES `userauth` (`username`)
     ON DELETE CASCADE
     ON UPDATE CASCADE);
 
@@ -117,7 +117,7 @@ CREATE TABLE IF NOT EXISTS `weedimage` (
   INDEX `weed_id_idx` (`weed_id` ASC) VISIBLE,
   CONSTRAINT `weed_id`
     FOREIGN KEY (`weed_id`)
-    REFERENCES `biosercurity`.`weedguide` (`weed_id`)
+    REFERENCES `weedguide` (`weed_id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE);
 
