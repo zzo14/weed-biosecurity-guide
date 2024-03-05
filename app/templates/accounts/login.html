@@ -28,7 +28,12 @@
                         <div class="input-group">
                             <input type="password" class="form-control" name="password" id="password" 
                                 title="Password must be at least 8 characters long and conatin uppercase, lowercase, number and special characters." 
-                                oninput="validatePassword('password')" required>
+                                oninput="validatePassword('password', 'password-tooltip')" required>
+                            <div class="tooltip" id="password-tooltip">
+                                Password must be: <br/>
+                                 - at least 8 characters long <br/>
+                                 - conatin uppercase, lowercase, number and special characters.
+                            </div>
                             <div class="input-group-append">
                                 <i class="fa-regular fa-eye" aria-hidden="true" onclick="togglePasswordVisibility('password')"></i>
                             </div>
