@@ -31,7 +31,7 @@ The application includes a login system with separate dashboards for three user 
 ### Gardener
  - Username: gardener1
  - Password: 123456Zzz!
- - Access: Manage personal profile, view weed guide with detailed information.
+ - Access: Manage personal profile, and view weed guide with detailed information.
 
 ### Staff
  - Username: staff1
