@@ -3,7 +3,8 @@
 {% block title %}Register{% endblock %}
 
 {% block background %}
-<img src="/static/images/login.jpg" alt="Background Image" class="position-fixed w-100 h-100" style="z-index: -1; object-fit: cover;">
+<img src="/static/images/login.jpg" alt="Background Image" class="position-fixed w-100 h-100"
+    style="z-index: -1; object-fit: cover;">
 {% endblock %}
 
 {% block navbar %}
@@ -27,16 +28,17 @@
                         <div class="form-group col-6">
                             <label for="password">Password</label>
                             <div class="input-group">
-                                <input type="password" class="form-control" name="password" id="password" 
-                                    title="Password must be at least 8 characters long and conatin uppercase, lowercase, number and special characters."   
+                                <input type="password" class="form-control" name="password" id="password"
+                                    title="Password must be at least 8 characters long and conatin uppercase, lowercase, number and special characters."
                                     oninput="validatePassword('password', 'password-tooltip')" required>
                                 <div class="tooltip" id="password-tooltip">
-                                    Password must be: <br/>
-                                     - at least 8 characters long <br/>
-                                     - conatin uppercase, lowercase, number and special characters.
+                                    Password must be: <br />
+                                    - at least 8 characters long <br />
+                                    - conatin uppercase, lowercase, number and special characters.
                                 </div>
                                 <div class="input-group-append">
-                                    <i class="fa-regular fa-eye" aria-hidden="true" onclick="togglePasswordVisibility('password')"></i>
+                                    <i class="fa-regular fa-eye" aria-hidden="true"
+                                        onclick="togglePasswordVisibility('password')"></i>
                                 </div>
                             </div>
                         </div>
@@ -57,20 +59,23 @@
                     </div>
                     <div class="form-group">
                         <label for="email">Email</label>
-                        <input type="email" class="form-control" name="email" id="email" title="Please enter a vaild title." required>
+                        <input type="email" class="form-control" name="email" id="email"
+                            title="Please enter a vaild title." required>
                     </div>
                     <div class="form-group">
                         <label for="phone_number">Phone</label>
-                        <input type="tel" pattern="[0-9]{10}" class="form-control" name="phone_number" id="phone_number" title="Please enter a vaild phone number.example: 0271231234." required>
+                        <input type="tel" pattern="[0-9]{10}" class="form-control" name="phone_number" id="phone_number"
+                            title="Please enter a vaild phone number.example: 0271231234." required>
                     </div>
-                    <br/>
+                    <br />
                     <div class="text-center">
                         <button type="submit" class="btn btn-success btn-block">Register</button>
                     </div>
                 </form>
             </div>
             <div class="card-footer text-center">
-                Already have an account? <a href="{{url_for('auth.login')}}">Login Here</a> or <a href="{{ url_for('home.home') }}">Go back.</a>
+                Already have an account? <a href="{{url_for('auth.login')}}">Login Here</a> or <a
+                    href="{{ url_for('home.home') }}">Go back.</a>
             </div>
         </div>
     </div>
