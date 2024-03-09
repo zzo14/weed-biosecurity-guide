@@ -3,7 +3,8 @@
 {% block title %}Login{% endblock %}
 
 {% block background %}
-<img src="/static/images/login.jpg" alt="Background Image" class="position-fixed w-100 h-100" style="z-index: -1; object-fit: cover;">
+<img src="/static/images/login.jpg" alt="Background Image" class="position-fixed w-100 h-100"
+    style="z-index: -1; object-fit: cover;">
 {% endblock %}
 
 {% block navbar %}
@@ -26,27 +27,29 @@
                     <div class="form-group">
                         <label for="password">Password</label>
                         <div class="input-group">
-                            <input type="password" class="form-control" name="password" id="password" 
-                                title="Password must be at least 8 characters long and conatin uppercase, lowercase, number and special characters." 
+                            <input type="password" class="form-control" name="password" id="password"
+                                title="Password must be at least 8 characters long and conatin uppercase, lowercase, number and special characters."
                                 oninput="validatePassword('password', 'password-tooltip')" required>
                             <div class="tooltip" id="password-tooltip">
-                                Password must be: <br/>
-                                 - at least 8 characters long <br/>
-                                 - conatin uppercase, lowercase, number and special characters.
+                                Password must be: <br />
+                                - at least 8 characters long <br />
+                                - conatin uppercase, lowercase, number and special characters.
                             </div>
                             <div class="input-group-append">
-                                <i class="fa-regular fa-eye" aria-hidden="true" onclick="togglePasswordVisibility('password')"></i>
+                                <i class="fa-regular fa-eye" aria-hidden="true"
+                                    onclick="togglePasswordVisibility('password')"></i>
                             </div>
                         </div>
                     </div>
-                    <br/>
+                    <br />
                     <div class="text-center">
                         <button type="submit" class="btn btn-success btn-block">Sign In</button>
                     </div>
                 </form>
             </div>
             <div class="card-footer text-center">
-                Don't have an account? <a href="{{url_for('auth.register')}}">Register Here</a> or <a href="{{ url_for('home.home') }}">Go back.</a>
+                Don't have an account? <a href="{{url_for('auth.register')}}">Register Here</a> or <a
+                    href="{{ url_for('home.home') }}">Go back.</a>
             </div>
         </div>
     </div>
