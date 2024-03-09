@@ -8,10 +8,10 @@
 {% endblock %}
 
 {% block content %}
-<br/>
-<br/>
-<br/>
-<br/>
+<br />
+<br />
+<br />
+<br />
 <!-- Staff Profile -->
 <div class="profile-card ms-auto">
     <div class="row">
@@ -25,40 +25,47 @@
                         <div class="row justify-content-around">
                             <div class="mb-3 col-6">
                                 <label for="first_name" class="form-label">First Name</label>
-                                <input type="text" class="form-control" id="first_name" name="first_name" value="{{ staff[2] }}" required>
+                                <input type="text" class="form-control" id="first_name" name="first_name"
+                                    value="{{ staff[2] }}" required>
                             </div>
                             <div class="mb-3 col-6">
                                 <label for="last_name" class="form-label">Last Name</label>
-                                <input type="text" class="form-control" id="last_name" name="last_name" value="{{ staff[3] }}" required>
+                                <input type="text" class="form-control" id="last_name" name="last_name"
+                                    value="{{ staff[3] }}" required>
                             </div>
                         </div>
                         <div class="row justify-content-around">
                             <div class="mb-3 col-6">
                                 <label for="work_phone" class="form-label">Work Phone</label>
-                                <input type="tel" pattern="[0-9]{10}" class="form-control" name="work_phone" id="work_phone" value="{{ staff[5] }}" title="Please enter a vaild phone number.example: 0271231234." required>
+                                <input type="tel" pattern="[0-9]{10}" class="form-control" name="work_phone"
+                                    id="work_phone" value="{{ staff[5] }}"
+                                    title="Please enter a vaild phone number.example: 0271231234." required>
                             </div>
                             <div class="mb-3 col-6">
                                 <label for="email" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="email" name="email" value="{{ staff[4] }}" required>
+                                <input type="email" class="form-control" id="email" name="email" value="{{ staff[4] }}"
+                                    required>
                             </div>
                         </div>
                         <div class="row justify-content-around">
                             <div class="mb-3 col-6">
                                 <label for="position" class="form-label">Position</label>
-                                <input type="text" class="form-control" id="position" name="position" value="{{ staff[7] }}" required>
+                                <input type="text" class="form-control" id="position" name="position"
+                                    value="{{ staff[7] }}" required>
                             </div>
                             <div class="mb-3 col-6">
                                 <label for="department" class="form-label">Department</label>
-                                <input type="text" class="form-control" id="department" name="department" value="{{ staff[8] }}" required>
+                                <input type="text" class="form-control" id="department" name="department"
+                                    value="{{ staff[8] }}" required>
                             </div>
-                        </div>  
+                        </div>
                         <div class="text-center">
                             <button type="submit" class="btn btn-success btn-block">Update Information</button>
                         </div>
                     </form>
                 </div>
             </div>
-            <br/>
+            <br />
         </div>
     </div>
 </div>
