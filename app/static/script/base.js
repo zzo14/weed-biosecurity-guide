@@ -1,17 +1,17 @@
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     handleAlerts();
 });
 
 // Make flash messages disappear after 10 seconds
 function handleAlerts() {
     var alerts = document.querySelectorAll('.alert');
-    alerts.forEach(function(alert) {
-        setTimeout(function() {
+    alerts.forEach(function (alert) {
+        setTimeout(function () {
             alert.style.opacity = '0';
-            setTimeout(function() {
+            setTimeout(function () {
                 alert.remove();
-            }, 600); 
-        }, 6000);
+            }, 600);
+        }, 10000);
     });
 }
 
@@ -35,7 +35,7 @@ function validatePassword(password_id, tooltip_id) {
     var tooltip = document.getElementById(tooltip_id)
     var submitButton = passwordInput.form.querySelector('button[type=submit]')
     var pattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{8,}$/;
-    
+
     if (pattern.test(passwordInput.value)) {
         passwordInput.style.borderColor = 'green';
         tooltip.style.display = 'none';
@@ -60,8 +60,8 @@ function previewImg(event) {
             continue;
         }
         var reader = new FileReader();
-        reader.onload = (function(theFile) {
-            return function(e) {
+        reader.onload = (function (theFile) {
+            return function (e) {
                 var imgDiv = document.createElement('div');
                 imgDiv.classList.add('col-3', 'my-2');
                 // create img element
@@ -96,7 +96,7 @@ function resetForm(modal_id) {
         moreImgPreview.innerHTML = '';
     }
     if (updateMoreImgPreview) {
-        updateMoreImgPreview.forEach(function(preview) {
+        updateMoreImgPreview.forEach(function (preview) {
             preview.innerHTML = '';
         })
     }
