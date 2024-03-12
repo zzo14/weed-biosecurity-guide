@@ -20,11 +20,11 @@ auth_bp = Blueprint("auth", __name__, template_folder="templates")
 def before_request():
     if "loggedin" in session and request.endpoint in ["auth.login", "auth.register"]:
         if session["userType"] == "Gardener":
-            return redirect(url_for("user.gardener_profile"))
+            return redirect(url_for("user.user_dashboard"))
         elif session["userType"] == "Staff":
-            return redirect(url_for("admin_staff.staff_profile"))
+            return redirect(url_for("admin_staff.staff_dashboard"))
         elif session["userType"] == "Admin":
-            return redirect(url_for("admin_staff.admin_profile"))
+            return redirect(url_for("admin_staff.admin_dashboard"))
 
 
 # Login, Register and Logout
