@@ -27,8 +27,16 @@ def before_request():
     ]:
         return redirect(url_for("home.home"))
 
-
 # Staff and admin functions
+@admin_staff_bp.route("/staff_dashboard")
+def staff_dashboard():
+    if session["userType"] == "Staff":
+        return render_template("staff_dashboard.html", username=session["username"], userType=session["userType"], profile_url=url_for("admin_staff.staff_profile"),)
+    else:
+        flash("Illegal Access!", "danger")
+        return redirect(url_for("home.home"))
+
+
 @admin_staff_bp.route("/staff_profile")
 def staff_profile():
     # staff profile page
@@ -45,6 +53,15 @@ def staff_profile():
             profile_url=url_for("admin_staff.staff_profile"),
             staff=staff,
         )
+    else:
+        flash("Illegal Access!", "danger")
+        return redirect(url_for("home.home"))
+
+
+@admin_staff_bp.route("/admin_dashboard")
+def admin_dashboard():
+    if session["userType"] == "Admin":
+        return render_template("admin_dashboard.html", username=session["username"], userType=session["userType"], profile_url=url_for("admin_staff.admin_profile"),)
     else:
         flash("Illegal Access!", "danger")
         return redirect(url_for("home.home"))
