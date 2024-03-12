@@ -1,20 +1,27 @@
-html, body {
+html,
+body {
     height: 100%;
     margin: 0;
     padding: 0;
 }
 
-/* .container {
-    margin-left: 150px;
-} */
-
-.profile-card {
-    padding-left: 10%;
+.container {
+    /* margin-left: 150px; */
+    margin: 0 auto;
+    min-height: 100vh;
+    max-width: 95%;
 }
 
-.login-card{
-    max-width: 40%; 
-    min-width: 300px; 
+@media (max-width: 768px) {
+    .profile-card {
+        padding-left: 10%;
+    }
+}
+
+
+.login-card {
+    max-width: 40%;
+    min-width: 300px;
     margin-left: 40%;
 }
 
@@ -69,6 +76,7 @@ html, body {
     color: #000;
     text-decoration: none;
 }
+
 /* End - flash message */
 
 /* login.html & register.html */
@@ -77,6 +85,7 @@ html, body {
     display: flex;
     align-items: center;
 }
+
 /* End - login.html & register.html */
 
 /* card - general */
@@ -90,12 +99,12 @@ html, body {
     transition: box-shadow 0.3s ease-in-out;
 }
 
-.card::before{
+.card::before {
     content: '';
     position: absolute;
-    top: 0; 
+    top: 0;
     left: 0;
-    width: 100%; 
+    width: 100%;
     height: 100%;
     background: linear-gradient(45deg, rgba(255, 255, 255, 0.3), transparent 50%);
     transform: rotate(0deg);
@@ -104,17 +113,23 @@ html, body {
     z-index: -1;
 }
 
-.card:hover::before{
+.card:hover::before {
     transform: rotate(90deg);
 }
 
-.card:hover{
+.card:hover {
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
 }
 
-.fixed-sized-image{
+.fixed-sized-image {
     object-fit: cover;
 }
+
+.card-link {
+    text-decoration: none;
+    color: inherit;
+}
+
 /* End -card */
 
 /* form -general */
@@ -136,12 +151,14 @@ html, body {
 .btn:hover {
     background-color: #09240f;
 }
+
 /* End -botton */
 
 /* navbar */
 .navtop {
     background-color: #324851;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    ;
     height: 60px;
     width: 100%;
     border: 0;
@@ -150,8 +167,10 @@ html, body {
     left: 0;
     right: 0;
     transition: background-color 0.3s ease;
-    z-index: 1030; /* high z-index to keep it above other elements */
+    z-index: 1030;
+    /* high z-index to keep it above other elements */
 }
+
 .navtop div {
     display: flex;
     margin: 0 auto;
@@ -159,41 +178,49 @@ html, body {
     height: 100%;
     align-items: center;
 }
-.navtop div h1, .navtop div a {
+
+.navtop div h1,
+.navtop div a {
     display: inline-flex;
     align-items: center;
 }
+
 .navtop div h1 {
     flex: 1;
     font-size: 24px;
-    padding: 0 15px;
+    padding: 0 10px;
     margin: 0;
     color: #CDD7D6;
     font-weight: normal;
     transition: color 0.3s ease;
 }
+
 .navtop div a {
     display: blcok;
-    padding: 20px;;
+    padding: 13px;
     text-decoration: none;
     color: #CDD7D6;
     font-weight: bold;
     transition: color 0.3s ease;
 }
+
 .navtop div a i {
     padding: 2px 8px 0 0;
 }
+
 .navtop div a:hover {
     color: #F0F7F4;
     background: #285943;
     border-radius: 8px;
 }
+
 /* End - navbar */
 
 /* sidebar */
 .sidebar {
     background-color: #F0F7F4;
-    box-shadow: 2PX 0 4px rgba(0, 0, 0, 0.5);;
+    box-shadow: 2PX 0 4px rgba(0, 0, 0, 0.5);
+    ;
     width: 220px;
     position: fixed;
     left: 0;
@@ -222,15 +249,16 @@ html, body {
     transition: all 0.3s;
 }
 
-.sidebar a i{
+.sidebar a i {
     margin-right: 10px;
 }
 
-.sidebar a:hover{
+.sidebar a:hover {
     color: #F0F7F4;
     background: #285943;
     border-radius: 8px;
 }
+
 /* End - sidebar */
 
 dl dd {
@@ -257,11 +285,12 @@ dl dt {
 .input-group .form-control {
     padding-right: 30px;
 }
+
 /* End - password input */
 
 /* inactive card */
 .inactive_card {
-    position:relative;
+    position: relative;
     overflow: hidden;
     background-color: #b5b4b4;
 }
@@ -278,6 +307,7 @@ dl dt {
 .inactive_card:hover .inactive_card_footer {
     opacity: 1;
 }
+
 /* End - inactive card */
 
 /* password tooltip */
@@ -292,6 +322,7 @@ dl dt {
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     top: 100%;
     left: 0;
-    z-index:10;
+    z-index: 10;
 }
+
 /* End - password tooltip */
