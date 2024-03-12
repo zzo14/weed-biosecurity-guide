@@ -18,6 +18,14 @@ def before_request():
         return redirect(url_for("home.home"))
 
 
+@user_bp.route("/user_dashboard")
+def user_dashboard():
+    if session["userType"] == "Gardener":
+        return render_template("user_dashboard.html", username=session["username"], userType=session["userType"], profile_url=url_for("user.gardener_profile"),)
+    else:
+        flash("Illegal Access!", "danger")
+        return redirect(url_for("home.home"))
+
 # User functions
 @user_bp.route("/gardener_profile")
 def gardener_profile():
@@ -28,16 +36,10 @@ def gardener_profile():
         connection.execute(query, (id,))
         user = connection.fetchone()
         return render_template(
-            "gardener_profile.html",
-            username=session["username"],
-            userType=session["userType"],
-            profile_url=url_for("user.gardener_profile"),
-            user=user,
-        )
+            "gardener_profile.html", username=session["username"], userType=session["userType"], profile_url=url_for("user.gardener_profile"), user=user,)
     else:
         flash("Illegal Access!", "danger")
         return redirect(url_for("home.home"))
-
 
 @user_bp.route("/gardener_profile/update_gardener_profile", defaults={"gardener_id": None}, methods=["GET", "POST"],)
 @user_bp.route("/gardener_profile/update_gardener_profile/<int:gardener_id>", methods=["GET", "POST"],)
