@@ -168,9 +168,4 @@ def change_password():
                 flash("Change password failed. Please try again.", "danger")
         except Exception as e:
             flash(f"Error: {e}. Change password failed. Please try again.", "danger")
-    return render_template(
-        "change_password.html",
-        username=session["username"],
-        userType=session["userType"],
-        profile_url=profile_url,
-    )
+    return render_template( "change_password.html", username=session["username"], userType=session["userType"],profile_url=profile_url,)
