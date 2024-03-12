@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}Staff Dashboard{% endblock %}
+
+{% block navbar %}
+{% include 'navbar.html' %}
+{% endblock %}
+
+{% block header %}
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5 bg-light rounded">
+    <!-- Heading section -->
+    <div class="text-center py-3 pt-5">
+        <h2 class="display-4 text-success font-weight-bold">Staff Dashboard</h2>
+    </div>
+    <div>
+        <h4 class="form-label text-success text-center">
+            Welcome to your dashboard, what do you want to do today:
+        </h4>
+    </div>
+
+    <div class="row justify-content-around">
+        <div class="col-md-5 col-sm-6 mb-5">
+            <a href="{{ profile_url }}" class="card-link">
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <h5 class="card-title">
+                                    <div>
+                                        <p class="form-label font-weight-bold text-success text-center">Profile</p>
+                                    </div>
+                                </h5>
+                                <p class="card-text">
+                                <div>
+                                    <p class="form-label font-weight-bold text-success text-center">
+                                        You can change you information and password here
+                                    </p>
+                                </div>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <a href="{{ url_for('weed.weed_guide') }}" class="card-link">
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <h5 class="card-title">
+                                    <div>
+                                        <p class="form-label font-weight-bold text-success text-center">Weed Guide</p>
+                                    </div>
+                                </h5>
+                                <p class="card-text">
+                                <div>
+                                    <p class="form-label font-weight-bold text-success text-center">
+                                        You can manager weeds here
+                                    </p>
+                                </div>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <a href="{{ url_for('admin_staff.gardener_list') }}" class="card-link">
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <h5 class="card-title">
+                                    <div>
+                                        <p class="form-label font-weight-bold text-success text-center">
+                                            Gardener List
+                                        </p>
+                                    </div>
+                                </h5>
+                                <p class="card-text">
+                                <div>
+                                    <p class="form-label font-weight-bold text-success text-center">
+                                        You can view gardener users here
+                                    </p>
+                                </div>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
