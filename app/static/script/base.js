@@ -36,7 +36,12 @@ function validatePassword(password_id, tooltip_id) {
     var submitButton = passwordInput.form.querySelector('button[type=submit]')
     var pattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{8,}$/;
 
-    if (pattern.test(passwordInput.value)) {
+    if (passwordInput.value === '') {
+        passwordInput.style.borderColor = '';
+        tooltip.style.display = 'none';
+        submitButton.disabled = false;
+    }
+    else if (pattern.test(passwordInput.value)) {
         passwordInput.style.borderColor = 'green';
         tooltip.style.display = 'none';
         submitButton.disabled = false;
