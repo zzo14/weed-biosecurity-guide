@@ -47,7 +47,7 @@ def login():
             session["password"] = user[2]
             session["userType"] = user[3]
             flash("Welcome back! ", "success")
-            before_request()
+            return before_request()
         else:
             flash("Invilid username or password, please try again.", "danger")
             return redirect(url_for("auth.login"))
