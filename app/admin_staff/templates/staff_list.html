@@ -108,7 +108,7 @@
         {% for staff in active_staffs %}
         {% set outer_index = loop.index %}
         <div class="col-md-4 col-sm-6 mb-5">
-            <div class="card">
+            <div class="card" data-bs-toggle="modal" data-bs-target="#updateStaffModal{{ outer_index }}">
                 <div class="card-body">
                     <div class="row">
                         <div class="col-12">
