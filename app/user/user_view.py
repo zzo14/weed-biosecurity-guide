@@ -13,7 +13,7 @@ user_bp = Blueprint("user", __name__, template_folder="templates")
 
 @user_bp.before_request
 def before_request():
-    if "loggedin" not in session and request.endpoint in ["user.gardener_profile"]:
+    if "loggedin" not in session and request.endpoint in ["user.gardener_profile", "user.user_dashboard"]:
         flash("Illegal Access!", "danger")
         return redirect(url_for("home.home"))
 
