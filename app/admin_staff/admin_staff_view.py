@@ -20,11 +20,14 @@ admin_staff_bp = Blueprint("admin_staff", __name__, template_folder="templates")
 @admin_staff_bp.before_request
 def before_request():
     if "loggedin" not in session and request.endpoint in [
+        "admin_staff.staff_dashboard",
         "admin_staff.staff_profile",
+        "admin_staff.admin_dashboard",
         "admin_staff.admin_profile",
         "admin_staff.gardener_list",
         "admin_staff.staff_list",
     ]:
+        flash("Illegal Access!", "danger")
         return redirect(url_for("home.home"))
 
 # Staff and admin functions
