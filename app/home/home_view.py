@@ -12,10 +12,10 @@ home_bp = Blueprint("home", __name__, template_folder="templates")
 @home_bp.route("/")
 def home():
     if "loggedin" in session:
-        if session["userType"] == "Gardener":
+        if session.get("userType") == "Gardener":
             return redirect(url_for("user.user_dashboard"))
-        elif session["userType"] == "Staff":
+        elif session.get("userType") == "Staff":
             return redirect(url_for("admin_staff.staff_dashboard"))
-        elif session["userType"] == "Admin":
+        elif session.get("userType") == "Admin":
             return redirect(url_for("admin_staff.admin_dashboard"))
     return render_template("home.html")
